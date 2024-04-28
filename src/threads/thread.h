@@ -96,7 +96,7 @@ struct thread
     /*Data to handle priority*/
     int base_priority;
     struct list locks;
-    struct lock *lock_Waiting;
+    struct lock *lock_waiting;
 
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
