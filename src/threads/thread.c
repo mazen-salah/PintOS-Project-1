@@ -596,3 +596,24 @@ bool compare_priority(const struct list_elem *a, const struct list_elem *b, void
   int pb = list_entry(b, struct thread, elem)->priority;
   return pa > pb;
 }
+
+/* ++1.2 Let thread hold a lock */
+  void thread_hold_the_lock(struct lock *lock) {
+  enum intr_level old_level = intr_disable();
+  list_insert_ordered(&thread_current()->locks, &lock->elem, lock_cmp_priority,NULL);
+  if (lock->max_priority > thread_current()->priority) {
+    thread_current()->priority = lock->max_priority;
+    thread_yield();
+  }
+  intr_set_level(old_level);
+}
+/* ++1.2 Donate current priority to thread t */
+void thread_donate_priority(struct thread *t) {
+  enum intr_level old_level = intr_disable();
+  thread_update_priority(t);
+  if (t->status == THREAD_READY) {
+    list_remove(&t->elem);
+    list_insert_ordered(&ready_list, &t->elem, compare_priority, NULL);
+  }
+  intr_set_level(old_level);
+}
