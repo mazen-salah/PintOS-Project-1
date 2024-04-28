@@ -479,6 +479,11 @@ init_thread (struct thread *t, const char *name, int priority)
   /* ++1.2 Priority */
   list_insert_ordered(&all_list, &t->allelem, (list_less_func *)&compare_priority,NULL);
   intr_set_level (old_level);
+
+  /*priortity*/
+  t->base_priority = priority;
+  list_init(&t->locks);
+  t->lock_Waiting = NULL;
 }
 
 /* Allocates a SIZE-byte frame at the top of thread T's stack and
