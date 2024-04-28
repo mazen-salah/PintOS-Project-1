@@ -225,8 +225,7 @@ lock_acquire (struct lock *lock)
   }
   lock->holder = current_thread;
   intr_set_level(old_level);
-  //sema_down (&lock->semaphore);
-  //lock->holder = thread_current ();
+
 }
 
 /* Tries to acquires LOCK and returns true if successful or false
