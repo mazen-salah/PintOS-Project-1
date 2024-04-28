@@ -617,3 +617,18 @@ void thread_donate_priority(struct thread *t) {
   }
   intr_set_level(old_level);
 }
+
+/* ++1.2 Used to update priority. */
+void thread_update_priority(struct thread *t) {
+  enum intr_level old_level = intr_disable();
+  int max_priority = t->base_priority;
+  int lock_priority;
+  if (!list_empty(&t->locks)) {
+    list_sort(&t->locks, lock_cmp_priority, NULL);
+    lock_priority = list_entry(list_front(&t->locks), struct lock, elem)->max_priority;
+  if (lock_priority > max_priority)
+    max_priority = lock_priority;
+  }
+  t->priority = max_priority;
+  intr_set_level(old_level);
+}

@@ -146,4 +146,6 @@ int thread_get_load_avg (void);
 /* +++1.2 */
 bool compare_priority(const struct list_elem *, const struct list_elem *, void *);
 
+void thread_update_priority(struct thread *t);
+
 #endif /* threads/thread.h */
