@@ -338,7 +338,13 @@ thread_foreach (thread_action_func *func, void *aux)
 void
 thread_set_priority (int new_priority) 
 {
-  thread_current ()->priority = new_priority;
+  int old_priority = thread_current ()->priority;
+
+  thread_current()->priority = new_priority;
+  /*priority handling*/
+  if (new_priority < old_priority){
+    thread_yield();
+  }
 }
 
 /* Returns the current thread's priority. */
@@ -598,7 +604,7 @@ bool compare_priority(const struct list_elem *a, const struct list_elem *b, void
 }
 
 /* ++1.2 Let thread hold a lock */
-  void thread_hold_the_lock(struct lock *lock) {
+void thread_hold_the_lock(struct lock *lock) {
   enum intr_level old_level = intr_disable();
   list_insert_ordered(&thread_current()->locks, &lock->elem, lock_cmp_priority,NULL);
   if (lock->max_priority > thread_current()->priority) {
