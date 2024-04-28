@@ -642,3 +642,17 @@ void thread_update_priority(struct thread *t) {
   t->priority = max_priority;
   intr_set_level(old_level);
 }
+
+/* ++1.2 Compare priority in locks */
+bool lock_cmp_priority(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED) {
+  return list_entry(a, struct lock, elem)->max_priority > list_entry(b, struct lock, elem)->max_priority;
+}
+
+/* ++1.2 Remove a lock. */
+void thread_remove_lock(struct lock *lock) {
+  enum intr_level old_level = intr_disable();
+  list_remove(&lock->elem);
+  thread_update_priority(thread_current());
+  intr_set_level(old_level);
+}
+
