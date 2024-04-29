@@ -84,6 +84,7 @@ static tid_t allocate_tid (void);
 
    It is not safe to call thread_current() until this function
    finishes. */
+
 void
 thread_init (void) 
 {
@@ -182,6 +183,9 @@ thread_create (const char *name, int priority,
   /* Initialize thread. */
   init_thread (t, name, priority);
   tid = t->tid = allocate_tid ();
+
+/*modified*/
+  t->blocked_ticks=0;
 
   /* Stack frame for kernel_thread(). */
   kf = alloc_frame (t, sizeof *kf);
@@ -582,3 +586,15 @@ allocate_tid (void)
 /* Offset of `stack' member within `struct thread'.
    Used by switch.S, which can't figure it out on its own. */
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);
+
+/*modified*/
+/*function that checks if the thread should be unblocked or not*/
+void thread_check_blocked (struct thread *t, void *aux UNUSED){
+  if (t->status == THREAD_BLOCKED && t->blocked_ticks > 0){
+	  t->blocked_ticks--;
+	  if (t->blocked_ticks == 0) {
+		  thread_unblock(t);
+    }
+    else {return;}
+  }
+}

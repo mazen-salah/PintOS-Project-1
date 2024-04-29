@@ -92,6 +92,7 @@ struct thread
 
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
+    uint16_t blocked_ticks;              /*modified*/
 
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
@@ -137,5 +138,7 @@ int thread_get_nice (void);
 void thread_set_nice (int);
 int thread_get_recent_cpu (void);
 int thread_get_load_avg (void);
+//modified 
+void thread_check_blocked(struct thread * , void * aux UNUSED);
 
 #endif /* threads/thread.h */
