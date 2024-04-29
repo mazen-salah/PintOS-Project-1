@@ -1,12 +1,3 @@
-/* ++Task 3 mlfqs */
-
-/**
- * @brief Represents a fixed-point number.
- *
- * The `fixed_t` type is used to represent fixed-point numbers in the code.
- * It is typedefed to `int` for simplicity.
- */
-
 /* Basic definitions of fixed point. */
 typedef int fixed_t;
 /* 16 LSB used for fractional part. */
@@ -33,4 +24,4 @@ typedef int fixed_t;
 #define FP_INT_PART(A) (A >> FP_SHIFT_AMOUNT)
 /* Get rounded integer of a fixed-point value. */
 #define FP_ROUND(A) (A >= 0 ? ((A + (1 << (FP_SHIFT_AMOUNT - 1))) >> FP_SHIFT_AMOUNT) \
-                            : ((A - (1 << (FP_SHIFT_AMOUNT - 1))) >> FP_SHIFT_AMOUNT))
+			    : ((A - (1 << (FP_SHIFT_AMOUNT - 1))) >> FP_SHIFT_AMOUNT))
