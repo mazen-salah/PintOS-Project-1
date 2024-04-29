@@ -98,6 +98,11 @@ struct thread
    int nice; /* Niceness. */
    fixed_t recent_cpu;
 
+    /*Data to handle priority*/
+    int base_priority;
+    struct list locks;
+    struct lock *lock_waiting;
+
 #ifdef USERPROG
    /* Owned by userprog/process.c. */
    uint32_t *pagedir; /* Page directory. */
@@ -148,4 +153,11 @@ void thread_mlfqs_update_priority(struct thread *);
 void thread_mlfqs_update_load_avg_and_recent_cpu(void);
 void thread_mlfqs_increase_recent_cpu_by_one(void);
 
+/* +++1.2 */
+bool compare_priority(const struct list_elem *, const struct list_elem *, void *);
+void thread_update_priority(struct thread *);
+bool lock_cmp_priority(const struct list_elem *, const struct list_elem *,void *);
+void thread_remove_lock(struct lock *);
+void thread_donate_priority(struct thread *);
+void thread_hold_the_lock(struct lock *);
 #endif /* threads/thread.h */
