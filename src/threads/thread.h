@@ -82,6 +82,7 @@ typedef int tid_t;
    ready state is on the run queue, whereas only a thread in the
    blocked state is on a semaphore wait list. */
 struct thread
+
 {
    /* Owned by thread.c. */
    tid_t tid;                 /* Thread identifier. */
@@ -93,7 +94,9 @@ struct thread
 
    /* Shared between thread.c and synch.c. */
    struct list_elem elem; /* List element. */
-
+   
+   uint16_t blocked_ticks;              /*modified*/
+   
    /* ++Task 3 Nice */
    int nice; /* Niceness. */
    fixed_t recent_cpu;
@@ -137,6 +140,7 @@ void thread_exit(void) NO_RETURN;
 void thread_yield(void);
 
 /* Performs some operation on thread t, given auxiliary data AUX. */
+
 typedef void thread_action_func(struct thread *t, void *aux);
 void thread_foreach(thread_action_func *, void *);
 
@@ -147,6 +151,9 @@ int thread_get_nice(void);
 void thread_set_nice(int);
 int thread_get_recent_cpu(void);
 int thread_get_load_avg(void);
+
+//modified 
+void thread_check_blocked(struct thread * , void * aux UNUSED);
 
 /* ++Task 3 mlfqs */
 void thread_mlfqs_update_priority(struct thread *);
@@ -160,4 +167,5 @@ bool lock_cmp_priority(const struct list_elem *, const struct list_elem *,void *
 void thread_remove_lock(struct lock *);
 void thread_donate_priority(struct thread *);
 void thread_hold_the_lock(struct lock *);
+
 #endif /* threads/thread.h */

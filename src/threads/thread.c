@@ -89,6 +89,7 @@ fixed_t load_avg;
 
    It is not safe to call thread_current() until this function
    finishes. */
+
 void thread_init(void)
 {
   ASSERT(intr_get_level() == INTR_OFF);
@@ -182,6 +183,9 @@ tid_t thread_create(const char *name, int priority,
   /* Initialize thread. */
   init_thread(t, name, priority);
   tid = t->tid = allocate_tid();
+
+/*modified*/
+  t->blocked_ticks=0;
 
   /* Stack frame for kernel_thread(). */
   kf = alloc_frame(t, sizeof *kf);
@@ -595,6 +599,17 @@ allocate_tid(void)
 
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);
 
+/*modified*/
+/*function that checks if the thread should be unblocked or not*/
+void thread_check_blocked (struct thread *t, void *aux UNUSED){
+  if (t->status == THREAD_BLOCKED && t->blocked_ticks > 0){
+	  t->blocked_ticks--;
+	  if (t->blocked_ticks == 0) {
+		  thread_unblock(t);
+    }
+    else {return;}
+  }
+}
 /* ++1.2 Compare priority */
 bool compare_priority(const struct list_elem *a, const struct list_elem *b, void
           *aux UNUSED)
