@@ -24,29 +24,29 @@ test_alarm_multiple (void)
   test_sleep (5, 7);
 }
 
-/* Information about the test. */
+
 struct sleep_test 
   {
-    int64_t start;              /* Current time at start of test. */
-    int iterations;             /* Number of iterations per thread. */
+    int64_t start;              
+    int iterations;             
 
-    /* Output. */
-    struct lock output_lock;    /* Lock protecting output buffer. */
-    int *output_pos;            /* Current position in output buffer. */
+    
+    struct lock output_lock;    
+    int *output_pos;            
   };
 
-/* Information about an individual thread in the test. */
+
 struct sleep_thread 
   {
-    struct sleep_test *test;     /* Info shared between all threads. */
-    int id;                     /* Sleeper ID. */
-    int duration;               /* Number of ticks to sleep. */
-    int iterations;             /* Iterations counted so far. */
+    struct sleep_test *test;     
+    int id;                     
+    int duration;               
+    int iterations;             
   };
 
 static void sleeper (void *);
 
-/* Runs THREAD_CNT threads thread sleep ITERATIONS times each. */
+
 static void
 test_sleep (int thread_cnt, int iterations) 
 {
@@ -56,7 +56,7 @@ test_sleep (int thread_cnt, int iterations)
   int product;
   int i;
 
-  /* This test does not work with the MLFQS. */
+  
   ASSERT (!thread_mlfqs);
 
   msg ("Creating %d threads to sleep %d times each.", thread_cnt, iterations);
@@ -65,19 +65,19 @@ test_sleep (int thread_cnt, int iterations)
   msg ("If successful, product of iteration count and");
   msg ("sleep duration will appear in nondescending order.");
 
-  /* Allocate memory. */
+  
   threads = malloc (sizeof *threads * thread_cnt);
   output = malloc (sizeof *output * iterations * thread_cnt * 2);
   if (threads == NULL || output == NULL)
     PANIC ("couldn't allocate memory for test");
 
-  /* Initialize test. */
+  
   test.start = timer_ticks () + 100;
   test.iterations = iterations;
   lock_init (&test.output_lock);
   test.output_pos = output;
 
-  /* Start threads. */
+  
   ASSERT (output != NULL);
   for (i = 0; i < thread_cnt; i++)
     {
@@ -93,14 +93,14 @@ test_sleep (int thread_cnt, int iterations)
       thread_create (name, PRI_DEFAULT, sleeper, t);
     }
   
-  /* Wait long enough for all the threads to finish. */
+  
   timer_sleep (100 + thread_cnt * iterations * 10 + 100);
 
   /* Acquire the output lock in case some rogue thread is still
      running. */
   lock_acquire (&test.output_lock);
 
-  /* Print completion order. */
+  
   product = 0;
   for (op = output; op < test.output_pos; op++) 
     {
@@ -122,7 +122,7 @@ test_sleep (int thread_cnt, int iterations)
               t->id, product, new_prod);
     }
 
-  /* Verify that we had the proper number of wakeups. */
+  
   for (i = 0; i < thread_cnt; i++)
     if (threads[i].iterations != iterations)
       fail ("thread %d woke up %d times instead of %d",
@@ -133,7 +133,7 @@ test_sleep (int thread_cnt, int iterations)
   free (threads);
 }
 
-/* Sleeper thread. */
+
 static void
 sleeper (void *t_) 
 {

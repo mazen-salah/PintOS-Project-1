@@ -38,7 +38,7 @@ process_execute (const char *file_name)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
 
-  /* Create a new thread to execute FILE_NAME. */
+  
   tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
@@ -54,14 +54,14 @@ start_process (void *file_name_)
   struct intr_frame if_;
   bool success;
 
-  /* Initialize interrupt frame and load executable. */
+  
   memset (&if_, 0, sizeof if_);
   if_.gs = if_.fs = if_.es = if_.ds = if_.ss = SEL_UDSEG;
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
 
-  /* If load failed, quit. */
+  
   palloc_free_page (file_name);
   if (!success) 
     thread_exit ();
@@ -91,7 +91,7 @@ process_wait (tid_t child_tid UNUSED)
   return -1;
 }
 
-/* Free the current process's resources. */
+
 void
 process_exit (void)
 {
@@ -124,7 +124,7 @@ process_activate (void)
 {
   struct thread *t = thread_current ();
 
-  /* Activate thread's page tables. */
+  
   pagedir_activate (t->pagedir);
 
   /* Set thread's kernel stack for use in processing
@@ -135,15 +135,15 @@ process_activate (void)
 /* We load ELF binaries.  The following definitions are taken
    from the ELF specification, [ELF1], more-or-less verbatim.  */
 
-/* ELF types.  See [ELF1] 1-2. */
+
 typedef uint32_t Elf32_Word, Elf32_Addr, Elf32_Off;
 typedef uint16_t Elf32_Half;
 
-/* For use with ELF types in printf(). */
-#define PE32Wx PRIx32   /* Print Elf32_Word in hexadecimal. */
-#define PE32Ax PRIx32   /* Print Elf32_Addr in hexadecimal. */
-#define PE32Ox PRIx32   /* Print Elf32_Off in hexadecimal. */
-#define PE32Hx PRIx16   /* Print Elf32_Half in hexadecimal. */
+
+#define PE32Wx PRIx32   
+#define PE32Ax PRIx32   
+#define PE32Ox PRIx32   
+#define PE32Hx PRIx16   
 
 /* Executable header.  See [ELF1] 1-4 to 1-8.
    This appears at the very beginning of an ELF binary. */
@@ -180,20 +180,20 @@ struct Elf32_Phdr
     Elf32_Word p_align;
   };
 
-/* Values for p_type.  See [ELF1] 2-3. */
-#define PT_NULL    0            /* Ignore. */
-#define PT_LOAD    1            /* Loadable segment. */
-#define PT_DYNAMIC 2            /* Dynamic linking info. */
-#define PT_INTERP  3            /* Name of dynamic loader. */
-#define PT_NOTE    4            /* Auxiliary info. */
-#define PT_SHLIB   5            /* Reserved. */
-#define PT_PHDR    6            /* Program header table. */
-#define PT_STACK   0x6474e551   /* Stack segment. */
 
-/* Flags for p_flags.  See [ELF3] 2-3 and 2-4. */
-#define PF_X 1          /* Executable. */
-#define PF_W 2          /* Writable. */
-#define PF_R 4          /* Readable. */
+#define PT_NULL    0            
+#define PT_LOAD    1            
+#define PT_DYNAMIC 2            
+#define PT_INTERP  3            
+#define PT_NOTE    4            
+#define PT_SHLIB   5            
+#define PT_PHDR    6            
+#define PT_STACK   0x6474e551   
+
+
+#define PF_X 1          
+#define PF_W 2          
+#define PF_R 4          
 
 static bool setup_stack (void **esp);
 static bool validate_segment (const struct Elf32_Phdr *, struct file *);
@@ -215,13 +215,13 @@ load (const char *file_name, void (**eip) (void), void **esp)
   bool success = false;
   int i;
 
-  /* Allocate and activate page directory. */
+  
   t->pagedir = pagedir_create ();
   if (t->pagedir == NULL) 
     goto done;
   process_activate ();
 
-  /* Open executable file. */
+  
   file = filesys_open (file_name);
   if (file == NULL) 
     {
@@ -229,7 +229,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
       goto done; 
     }
 
-  /* Read and verify executable header. */
+  
   if (file_read (file, &ehdr, sizeof ehdr) != sizeof ehdr
       || memcmp (ehdr.e_ident, "\177ELF\1\1\1", 7)
       || ehdr.e_type != 2
@@ -242,7 +242,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
       goto done; 
     }
 
-  /* Read program headers. */
+  
   file_ofs = ehdr.e_phoff;
   for (i = 0; i < ehdr.e_phnum; i++) 
     {
@@ -262,7 +262,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
         case PT_PHDR:
         case PT_STACK:
         default:
-          /* Ignore this segment. */
+          
           break;
         case PT_DYNAMIC:
         case PT_INTERP:
@@ -301,22 +301,22 @@ load (const char *file_name, void (**eip) (void), void **esp)
         }
     }
 
-  /* Set up stack. */
+  
   if (!setup_stack (esp))
     goto done;
 
-  /* Start address. */
+  
   *eip = (void (*) (void)) ehdr.e_entry;
 
   success = true;
 
  done:
-  /* We arrive here whether the load is successful or not. */
+  
   file_close (file);
   return success;
 }
 
-/* load() helpers. */
+
 
 static bool install_page (void *upage, void *kpage, bool writable);
 
@@ -325,19 +325,19 @@ static bool install_page (void *upage, void *kpage, bool writable);
 static bool
 validate_segment (const struct Elf32_Phdr *phdr, struct file *file) 
 {
-  /* p_offset and p_vaddr must have the same page offset. */
+  
   if ((phdr->p_offset & PGMASK) != (phdr->p_vaddr & PGMASK)) 
     return false; 
 
-  /* p_offset must point within FILE. */
+  
   if (phdr->p_offset > (Elf32_Off) file_length (file)) 
     return false;
 
-  /* p_memsz must be at least as big as p_filesz. */
+  
   if (phdr->p_memsz < phdr->p_filesz) 
     return false; 
 
-  /* The segment must not be empty. */
+  
   if (phdr->p_memsz == 0)
     return false;
   
@@ -361,7 +361,7 @@ validate_segment (const struct Elf32_Phdr *phdr, struct file *file)
   if (phdr->p_vaddr < PGSIZE)
     return false;
 
-  /* It's okay. */
+  
   return true;
 }
 
@@ -396,12 +396,12 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
       size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
       size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
-      /* Get a page of memory. */
+      
       uint8_t *kpage = palloc_get_page (PAL_USER);
       if (kpage == NULL)
         return false;
 
-      /* Load this page. */
+      
       if (file_read (file, kpage, page_read_bytes) != (int) page_read_bytes)
         {
           palloc_free_page (kpage);
@@ -409,14 +409,14 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
         }
       memset (kpage + page_read_bytes, 0, page_zero_bytes);
 
-      /* Add the page to the process's address space. */
+      
       if (!install_page (upage, kpage, writable)) 
         {
           palloc_free_page (kpage);
           return false; 
         }
 
-      /* Advance. */
+      
       read_bytes -= page_read_bytes;
       zero_bytes -= page_zero_bytes;
       upage += PGSIZE;

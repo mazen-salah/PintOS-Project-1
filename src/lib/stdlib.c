@@ -14,11 +14,11 @@ atoi (const char *s)
 
   ASSERT (s != NULL);
 
-  /* Skip white space. */
+  
   while (isspace ((unsigned char) *s))
     s++;
 
-  /* Parse sign. */
+  
   negative = false;
   if (*s == '+')
     s++;
@@ -40,7 +40,7 @@ atoi (const char *s)
   return value;
 }
 
-/* Compares A and B by calling the AUX function. */
+
 static int
 compare_thunk (const void *a, const void *b, void *aux) 
 {
@@ -116,7 +116,7 @@ heapify (unsigned char *array, size_t i, size_t cnt, size_t size,
       if (max == i)
         break;
 
-      /* Swap and continue down the heap. */
+      
       do_swap (array, i, max, size);
       i = max;
     }
@@ -139,11 +139,11 @@ sort (void *array, size_t cnt, size_t size,
   ASSERT (compare != NULL);
   ASSERT (size > 0);
 
-  /* Build a heap. */
+  
   for (i = cnt / 2; i > 0; i--)
     heapify (array, i, cnt, size, compare, aux);
 
-  /* Sort the heap. */
+  
   for (i = cnt; i > 1; i--) 
     {
       do_swap (array, 1, i, size);

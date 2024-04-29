@@ -37,7 +37,7 @@ main (void)
 {
   int i, j, k;
 
-  /* Initialize the matrices. */
+  
   for (i = 0; i < DIM; i++)
     for (j = 0; j < DIM; j++)
       {
@@ -46,12 +46,12 @@ main (void)
 	C[i][j] = 0;
       }
 
-  /* Multiply matrices. */
+  
   for (i = 0; i < DIM; i++)	
     for (j = 0; j < DIM; j++)
       for (k = 0; k < DIM; k++)
 	C[i][j] += A[i][k] * B[k][j];
 
-  /* Done. */
+  
   exit (C[DIM - 1][DIM - 1]);
 }

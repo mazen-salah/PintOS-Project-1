@@ -6,7 +6,7 @@ static int next (int pos);
 static void wait (struct intq *q, struct thread **waiter);
 static void signal (struct intq *q, struct thread **waiter);
 
-/* Initializes interrupt queue Q. */
+
 void
 intq_init (struct intq *q) 
 {
@@ -15,7 +15,7 @@ intq_init (struct intq *q)
   q->head = q->tail = 0;
 }
 
-/* Returns true if Q is empty, false otherwise. */
+
 bool
 intq_empty (const struct intq *q) 
 {
@@ -23,7 +23,7 @@ intq_empty (const struct intq *q)
   return q->head == q->tail;
 }
 
-/* Returns true if Q is full, false otherwise. */
+
 bool
 intq_full (const struct intq *q) 
 {
@@ -74,7 +74,7 @@ intq_putc (struct intq *q, uint8_t byte)
   signal (q, &q->not_empty);
 }
 
-/* Returns the position after POS within an intq. */
+
 static int
 next (int pos) 
 {

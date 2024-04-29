@@ -18,7 +18,7 @@ test_alarm_priority (void)
 {
   int i;
   
-  /* This test does not work with the MLFQS. */
+  
   ASSERT (!thread_mlfqs);
 
   wake_time = timer_ticks () + 5 * TIMER_FREQ;
@@ -41,7 +41,7 @@ test_alarm_priority (void)
 static void
 alarm_priority_thread (void *aux UNUSED) 
 {
-  /* Busy-wait until the current time changes. */
+  
   int64_t start_time = timer_ticks ();
   while (timer_elapsed (start_time) == 0)
     continue;
@@ -51,7 +51,7 @@ alarm_priority_thread (void *aux UNUSED)
      between checking the time and a timer interrupt. */
   timer_sleep (wake_time - timer_ticks ());
 
-  /* Print a message on wake-up. */
+  
   msg ("Thread %s woke up.", thread_name ());
 
   sema_up (&wait_sema);

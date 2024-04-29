@@ -9,30 +9,30 @@
    specification. */
 struct ustar_header
   {
-    char name[100];             /* File name.  Null-terminated if room. */
-    char mode[8];               /* Permissions as octal string. */
-    char uid[8];                /* User ID as octal string. */
-    char gid[8];                /* Group ID as octal string. */
-    char size[12];              /* File size in bytes as octal string. */
+    char name[100];             
+    char mode[8];               
+    char uid[8];                
+    char gid[8];                
+    char size[12];              
     char mtime[12];             /* Modification time in seconds
                                    from Jan 1, 1970, as octal string. */
-    char chksum[8];             /* Sum of octets in header as octal string. */
-    char typeflag;              /* An enum ustar_type value. */
+    char chksum[8];             
+    char typeflag;              
     char linkname[100];         /* Name of link target.
                                    Null-terminated if room. */
-    char magic[6];              /* "ustar\0" */
-    char version[2];            /* "00" */
-    char uname[32];             /* User name, always null-terminated. */
-    char gname[32];             /* Group name, always null-terminated. */
-    char devmajor[8];           /* Device major number as octal string. */
-    char devminor[8];           /* Device minor number as octal string. */
+    char magic[6];              
+    char version[2];            
+    char uname[32];             
+    char gname[32];             
+    char devmajor[8];           
+    char devminor[8];           
     char prefix[155];           /* Prefix to file name.
                                    Null-terminated if room. */
-    char padding[12];           /* Pad to 512 bytes. */
+    char padding[12];           
   }
 PACKED;
 
-/* Returns the checksum for the given ustar format HEADER. */
+
 static unsigned int
 calculate_chksum (const struct ustar_header *h)
 {
@@ -88,7 +88,7 @@ ustar_make_header (const char *file_name, enum ustar_type type,
   ASSERT (sizeof (struct ustar_header) == USTAR_HEADER_SIZE);
   ASSERT (type == USTAR_REGULAR || type == USTAR_DIRECTORY);
 
-  /* Check file name. */
+  
   file_name = strip_antisocial_prefixes (file_name);
   if (strlen (file_name) > 99)
     {
@@ -96,7 +96,7 @@ ustar_make_header (const char *file_name, enum ustar_type type,
       return false;
     }
 
-  /* Fill in header except for final checksum. */
+  
   memset (h, 0, sizeof *h);
   strlcpy (h->name, file_name, sizeof h->name);
   snprintf (h->mode, sizeof h->mode, "%07o",
@@ -111,7 +111,7 @@ ustar_make_header (const char *file_name, enum ustar_type type,
   strlcpy (h->gname, "root", sizeof h->gname);
   strlcpy (h->uname, "root", sizeof h->uname);
 
-  /* Compute and fill in final checksum. */
+  
   snprintf (h->chksum, sizeof h->chksum, "%07o", calculate_chksum (h));
 
   return true;
@@ -139,7 +139,7 @@ parse_octal_field (const char *s, size_t size, unsigned long int *value)
         {
           if (*value > ULONG_MAX / 8)
             {
-              /* Overflow. */
+              
               return false;
             }
           *value = c - '0' + *value * 8;
@@ -152,12 +152,12 @@ parse_octal_field (const char *s, size_t size, unsigned long int *value)
         }
       else
         {
-          /* Bad character. */
+          
           return false;
         }
     }
 
-  /* Field did not end in space or null byte. */
+  
   return false;
 }
 
@@ -187,7 +187,7 @@ ustar_parse_header (const char header[USTAR_HEADER_SIZE],
 
   ASSERT (sizeof (struct ustar_header) == USTAR_HEADER_SIZE);
 
-  /* Detect end of archive. */
+  
   if (is_all_zeros (header, USTAR_HEADER_SIZE))
     {
       *file_name = NULL;
@@ -196,7 +196,7 @@ ustar_parse_header (const char header[USTAR_HEADER_SIZE],
       return NULL;
     }
 
-  /* Validate ustar header. */
+  
   if (memcmp (h->magic, "ustar", 6))
     return "not a ustar archive";
   else if (h->version[0] != '0' || h->version[1] != '0')
@@ -219,7 +219,7 @@ ustar_parse_header (const char header[USTAR_HEADER_SIZE],
   else
     size_ul = 0;
 
-  /* Success. */
+  
   *file_name = strip_antisocial_prefixes (h->name);
   *type = h->typeflag;
   *size = size_ul;

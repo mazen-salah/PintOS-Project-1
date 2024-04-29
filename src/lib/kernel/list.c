@@ -34,7 +34,7 @@
 static bool is_sorted (struct list_elem *a, struct list_elem *b,
                        list_less_func *less, void *aux) UNUSED;
 
-/* Returns true if ELEM is a head, false otherwise. */
+
 static inline bool
 is_head (struct list_elem *elem)
 {
@@ -49,14 +49,14 @@ is_interior (struct list_elem *elem)
   return elem != NULL && elem->prev != NULL && elem->next != NULL;
 }
 
-/* Returns true if ELEM is a tail, false otherwise. */
+
 static inline bool
 is_tail (struct list_elem *elem)
 {
   return elem != NULL && elem->prev != NULL && elem->next == NULL;
 }
 
-/* Initializes LIST as an empty list. */
+
 void
 list_init (struct list *list)
 {
@@ -67,7 +67,7 @@ list_init (struct list *list)
   list->tail.next = NULL;
 }
 
-/* Returns the beginning of LIST.  */
+
 struct list_elem *
 list_begin (struct list *list)
 {
@@ -154,7 +154,7 @@ list_head (struct list *list)
   return &list->head;
 }
 
-/* Return's LIST's tail. */
+
 struct list_elem *
 list_tail (struct list *list) 
 {
@@ -192,11 +192,11 @@ list_splice (struct list_elem *before,
   ASSERT (is_interior (first));
   ASSERT (is_interior (last));
 
-  /* Cleanly remove FIRST...LAST from its current list. */
+  
   first->prev->next = last->next;
   last->next->prev = first->prev;
 
-  /* Splice FIRST...LAST into new list. */
+  
   first->prev = before->prev;
   last->next = before;
   before->prev->next = first;
@@ -305,14 +305,14 @@ list_size (struct list *list)
   return cnt;
 }
 
-/* Returns true if LIST is empty, false otherwise. */
+
 bool
 list_empty (struct list *list)
 {
   return list_begin (list) == list_end (list);
 }
 
-/* Swaps the `struct list_elem *'s that A and B point to. */
+
 static void
 swap (struct list_elem **a, struct list_elem **b) 
 {
@@ -321,7 +321,7 @@ swap (struct list_elem **a, struct list_elem **b)
   *b = t;
 }
 
-/* Reverses the order of LIST. */
+
 void
 list_reverse (struct list *list)
 {
@@ -404,7 +404,7 @@ inplace_merge (struct list_elem *a0, struct list_elem *a1b0,
 void
 list_sort (struct list *list, list_less_func *less, void *aux)
 {
-  size_t output_run_cnt;        /* Number of runs output in current pass. */
+  size_t output_run_cnt;        
 
   ASSERT (list != NULL);
   ASSERT (less != NULL);
@@ -413,14 +413,14 @@ list_sort (struct list *list, list_less_func *less, void *aux)
      nondecreasing elements, until only one run is left. */
   do
     {
-      struct list_elem *a0;     /* Start of first run. */
-      struct list_elem *a1b0;   /* End of first run, start of second. */
-      struct list_elem *b1;     /* End of second run. */
+      struct list_elem *a0;     
+      struct list_elem *a1b0;   
+      struct list_elem *b1;     
 
       output_run_cnt = 0;
       for (a0 = list_begin (list); a0 != list_end (list); a0 = b1)
         {
-          /* Each iteration produces one output run. */
+          
           output_run_cnt++;
 
           /* Locate two adjacent runs of nondecreasing elements
@@ -430,7 +430,7 @@ list_sort (struct list *list, list_less_func *less, void *aux)
             break;
           b1 = find_end_of_run (a1b0, list_end (list), less, aux);
 
-          /* Merge the runs. */
+          
           inplace_merge (a0, a1b0, b1, less, aux);
         }
     }
@@ -451,10 +451,9 @@ list_insert_ordered (struct list *list, struct list_elem *elem,
   ASSERT (list != NULL);
   ASSERT (elem != NULL);
   ASSERT (less != NULL);
-
-  for (e = list_begin (list); e != list_end (list); e = list_next (e))
-    if (less (elem, e, aux))
-      break;
+  for (e = list_begin(list); e != list_end(list); e = list_next(e))
+	  if (less(elem, e, aux))
+		  break;
   return list_insert (e, elem);
 }
 

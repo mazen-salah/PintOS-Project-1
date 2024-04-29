@@ -14,19 +14,19 @@ test_main (void)
   int handle;
   pid_t child;
 
-  /* Open file, map, verify data. */
+  
   CHECK ((handle = open ("sample.txt")) > 1, "open \"sample.txt\"");
   CHECK (mmap (handle, actual) != MAP_FAILED, "mmap \"sample.txt\"");
   if (memcmp (actual, sample, strlen (sample)))
     fail ("read of mmap'd file reported bad data");
 
-  /* Spawn child and wait. */
+  
   CHECK ((child = exec ("child-inherit")) != -1, "exec \"child-inherit\"");
   quiet = true;
   CHECK (wait (child) == -1, "wait for child (should return -1)");
   quiet = false;
 
-  /* Verify data again. */
+  
   CHECK (!memcmp (actual, sample, strlen (sample)),
          "checking that mmap'd file still has same data");
 }

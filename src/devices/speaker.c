@@ -4,10 +4,10 @@
 #include "threads/interrupt.h"
 #include "devices/timer.h"
 
-/* Speaker port enable I/O register. */
+
 #define SPEAKER_PORT_GATE	0x61
 
-/* Speaker port enable bits. */
+
 #define SPEAKER_GATE_ENABLE	0x03
 
 /* Sets the PC speaker to emit a tone at the given FREQUENCY, in
@@ -43,7 +43,7 @@ speaker_off (void)
   intr_set_level (old_level);
 }
 
-/* Briefly beep the PC speaker. */
+
 void
 speaker_beep (void)
 {

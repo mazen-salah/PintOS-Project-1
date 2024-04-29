@@ -87,7 +87,7 @@ handle_error (ssize_t retval, int *fd, bool fd_is_pty, const char *call)
         {
           if (errno == EIO)
             {
-              /* Slave side of pty has been closed. */
+              
               *fd = -1;
             }
           else
@@ -120,7 +120,7 @@ relay (int pty, int dead_child_fd)
     };
   struct pipe pipes[2];
 
-  /* Make PTY, stdin, and stdout non-blocking. */
+  
   make_nonblocking (pty, true);
   make_nonblocking (STDIN_FILENO, true);
   make_nonblocking (STDOUT_FILENO, true);
@@ -219,7 +219,7 @@ relay (int pty, int dead_child_fd)
         struct pipe *p = &pipes[1];
         ssize_t n;
 
-        /* Write buffer. */
+        
         while (p->size > 0) 
           {
             n = write (p->out, p->buf + p->ofs, p->size);
@@ -266,7 +266,7 @@ main (int argc __attribute__ ((unused)), char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Open master side of pty and get ready to open slave. */
+  
   master = open ("/dev/ptmx", O_RDWR | O_NOCTTY);
   if (master < 0)
     fail_io ("open \"/dev/ptmx\"");
@@ -275,7 +275,7 @@ main (int argc __attribute__ ((unused)), char *argv[])
   if (unlockpt (master) < 0)
     fail_io ("unlockpt");
 
-  /* Open slave side of pty. */
+  
   name = ptsname (master);
   if (name == NULL)
     fail_io ("ptsname");
@@ -318,7 +318,7 @@ main (int argc __attribute__ ((unused)), char *argv[])
     fail_io ("fork");
   else if (pid != 0) 
     {
-      /* Running in parent process. */
+      
       int status;
       close (slave);
       relay (master, pipe_fds[0]);
@@ -337,7 +337,7 @@ main (int argc __attribute__ ((unused)), char *argv[])
     }
   else 
     {
-      /* Running in child process. */
+      
       if (setitimer (ITIMER_VIRTUAL, &old_itimerval, NULL) < 0)
         fail_io ("setitimer");
       if (dup2 (slave, STDOUT_FILENO) < 0)

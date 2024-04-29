@@ -13,69 +13,69 @@
 /* The code in this file is an interface to an ATA (IDE)
    controller.  It attempts to comply to [ATA-3]. */
 
-/* ATA command block port addresses. */
-#define reg_data(CHANNEL) ((CHANNEL)->reg_base + 0)     /* Data. */
-#define reg_error(CHANNEL) ((CHANNEL)->reg_base + 1)    /* Error. */
-#define reg_nsect(CHANNEL) ((CHANNEL)->reg_base + 2)    /* Sector Count. */
-#define reg_lbal(CHANNEL) ((CHANNEL)->reg_base + 3)     /* LBA 0:7. */
-#define reg_lbam(CHANNEL) ((CHANNEL)->reg_base + 4)     /* LBA 15:8. */
-#define reg_lbah(CHANNEL) ((CHANNEL)->reg_base + 5)     /* LBA 23:16. */
-#define reg_device(CHANNEL) ((CHANNEL)->reg_base + 6)   /* Device/LBA 27:24. */
-#define reg_status(CHANNEL) ((CHANNEL)->reg_base + 7)   /* Status (r/o). */
-#define reg_command(CHANNEL) reg_status (CHANNEL)       /* Command (w/o). */
+
+#define reg_data(CHANNEL) ((CHANNEL)->reg_base + 0)     
+#define reg_error(CHANNEL) ((CHANNEL)->reg_base + 1)    
+#define reg_nsect(CHANNEL) ((CHANNEL)->reg_base + 2)    
+#define reg_lbal(CHANNEL) ((CHANNEL)->reg_base + 3)     
+#define reg_lbam(CHANNEL) ((CHANNEL)->reg_base + 4)     
+#define reg_lbah(CHANNEL) ((CHANNEL)->reg_base + 5)     
+#define reg_device(CHANNEL) ((CHANNEL)->reg_base + 6)   
+#define reg_status(CHANNEL) ((CHANNEL)->reg_base + 7)   
+#define reg_command(CHANNEL) reg_status (CHANNEL)       
 
 /* ATA control block port addresses.
    (If we supported non-legacy ATA controllers this would not be
    flexible enough, but it's fine for what we do.) */
-#define reg_ctl(CHANNEL) ((CHANNEL)->reg_base + 0x206)  /* Control (w/o). */
-#define reg_alt_status(CHANNEL) reg_ctl (CHANNEL)       /* Alt Status (r/o). */
+#define reg_ctl(CHANNEL) ((CHANNEL)->reg_base + 0x206)  
+#define reg_alt_status(CHANNEL) reg_ctl (CHANNEL)       
 
-/* Alternate Status Register bits. */
-#define STA_BSY 0x80            /* Busy. */
-#define STA_DRDY 0x40           /* Device Ready. */
-#define STA_DRQ 0x08            /* Data Request. */
 
-/* Control Register bits. */
-#define CTL_SRST 0x04           /* Software Reset. */
+#define STA_BSY 0x80            
+#define STA_DRDY 0x40           
+#define STA_DRQ 0x08            
 
-/* Device Register bits. */
-#define DEV_MBS 0xa0            /* Must be set. */
-#define DEV_LBA 0x40            /* Linear based addressing. */
-#define DEV_DEV 0x10            /* Select device: 0=master, 1=slave. */
+
+#define CTL_SRST 0x04           
+
+
+#define DEV_MBS 0xa0            
+#define DEV_LBA 0x40            
+#define DEV_DEV 0x10            
 
 /* Commands.
    Many more are defined but this is the small subset that we
    use. */
-#define CMD_IDENTIFY_DEVICE 0xec        /* IDENTIFY DEVICE. */
-#define CMD_READ_SECTOR_RETRY 0x20      /* READ SECTOR with retries. */
-#define CMD_WRITE_SECTOR_RETRY 0x30     /* WRITE SECTOR with retries. */
+#define CMD_IDENTIFY_DEVICE 0xec        
+#define CMD_READ_SECTOR_RETRY 0x20      
+#define CMD_WRITE_SECTOR_RETRY 0x30     
 
-/* An ATA device. */
+
 struct ata_disk
   {
-    char name[8];               /* Name, e.g. "hda". */
-    struct channel *channel;    /* Channel that disk is attached to. */
-    int dev_no;                 /* Device 0 or 1 for master or slave. */
-    bool is_ata;                /* Is device an ATA disk? */
+    char name[8];               
+    struct channel *channel;    
+    int dev_no;                 
+    bool is_ata;                
   };
 
 /* An ATA channel (aka controller).
    Each channel can control up to two disks. */
 struct channel
   {
-    char name[8];               /* Name, e.g. "ide0". */
-    uint16_t reg_base;          /* Base I/O port. */
-    uint8_t irq;                /* Interrupt in use. */
+    char name[8];               
+    uint16_t reg_base;          
+    uint8_t irq;                
 
-    struct lock lock;           /* Must acquire to access the controller. */
+    struct lock lock;           
     bool expecting_interrupt;   /* True if an interrupt is expected, false if
                                    any interrupt would be spurious. */
-    struct semaphore completion_wait;   /* Up'd by interrupt handler. */
+    struct semaphore completion_wait;   
 
-    struct ata_disk devices[2];     /* The devices on this channel. */
+    struct ata_disk devices[2];     
   };
 
-/* We support the two "legacy" ATA channels found in a standard PC. */
+
 #define CHANNEL_CNT 2
 static struct channel channels[CHANNEL_CNT];
 
@@ -97,7 +97,7 @@ static void select_device_wait (const struct ata_disk *);
 
 static void interrupt_handler (struct intr_frame *);
 
-/* Initialize the disk subsystem and detect disks. */
+
 void
 ide_init (void) 
 {
@@ -108,7 +108,7 @@ ide_init (void)
       struct channel *c = &channels[chan_no];
       int dev_no;
 
-      /* Initialize channel. */
+      
       snprintf (c->name, sizeof c->name, "ide%zu", chan_no);
       switch (chan_no) 
         {
@@ -127,7 +127,7 @@ ide_init (void)
       c->expecting_interrupt = false;
       sema_init (&c->completion_wait, 0);
  
-      /* Initialize devices. */
+      
       for (dev_no = 0; dev_no < 2; dev_no++)
         {
           struct ata_disk *d = &c->devices[dev_no];
@@ -138,24 +138,24 @@ ide_init (void)
           d->is_ata = false;
         }
 
-      /* Register interrupt handler. */
+      
       intr_register_ext (c->irq, interrupt_handler, c->name);
 
-      /* Reset hardware. */
+      
       reset_channel (c);
 
-      /* Distinguish ATA hard disks from other devices. */
+      
       if (check_device_type (&c->devices[0]))
         check_device_type (&c->devices[1]);
 
-      /* Read hard disk identity information. */
+      
       for (dev_no = 0; dev_no < 2; dev_no++)
         if (c->devices[dev_no].is_ata)
           identify_ata_device (&c->devices[dev_no]);
     }
 }
 
-/* Disk detection and identification. */
+
 
 static char *descramble_ata_string (char *, int size);
 
@@ -198,14 +198,14 @@ reset_channel (struct channel *c)
 
   timer_msleep (150);
 
-  /* Wait for device 0 to clear BSY. */
+  
   if (present[0]) 
     {
       select_device (&c->devices[0]);
       wait_while_busy (&c->devices[0]); 
     }
 
-  /* Wait for device 1 to clear BSY. */
+  
   if (present[1])
     {
       int i;
@@ -303,7 +303,7 @@ identify_ata_device (struct ata_disk *d)
       return;
     }
 
-  /* Register. */
+  
   block = block_register (d->name, BLOCK_RAW, extra_info, capacity,
                           &ide_operations, d);
   partition_scan (block);
@@ -317,7 +317,7 @@ descramble_ata_string (char *string, int size)
 {
   int i;
 
-  /* Swap all pairs of bytes. */
+  
   for (i = 0; i + 1 < size; i += 2)
     {
       char tmp = string[i];
@@ -325,7 +325,7 @@ descramble_ata_string (char *string, int size)
       string[i + 1] = tmp;
     }
 
-  /* Find the last non-white, non-null character. */
+  
   for (size--; size > 0; size--)
     {
       int c = string[size - 1];
@@ -430,7 +430,7 @@ output_sector (struct channel *c, const void *sector)
   outsw (reg_data (c), sector, BLOCK_SECTOR_SIZE / 2);
 }
 
-/* Low-level ATA primitives. */
+
 
 /* Wait up to 10 seconds for the controller to become idle, that
    is, for the BSY and DRQ bits to clear in the status register.
@@ -479,7 +479,7 @@ wait_while_busy (const struct ata_disk *d)
   return false;
 }
 
-/* Program D's channel so that D is now the selected disk. */
+
 static void
 select_device (const struct ata_disk *d)
 {
@@ -502,7 +502,7 @@ select_device_wait (const struct ata_disk *d)
   wait_until_idle (d);
 }
 
-/* ATA interrupt handler. */
+
 static void
 interrupt_handler (struct intr_frame *f) 
 {
@@ -513,8 +513,8 @@ interrupt_handler (struct intr_frame *f)
       {
         if (c->expecting_interrupt) 
           {
-            inb (reg_status (c));               /* Acknowledge interrupt. */
-            sema_up (&c->completion_wait);      /* Wake up waiter. */
+            inb (reg_status (c));               
+            sema_up (&c->completion_wait);      
           }
         else
           printf ("%s: unexpected interrupt\n", c->name);

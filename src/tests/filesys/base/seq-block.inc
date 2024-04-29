@@ -1,4 +1,4 @@
-/* -*- c -*- */
+
 
 #include "tests/filesys/seq-test.h"
 #include "tests/main.h"

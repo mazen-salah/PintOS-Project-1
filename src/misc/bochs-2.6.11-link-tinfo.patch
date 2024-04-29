@@ -8,7 +8,7 @@ diff -ru bochs-2.6.11.dist/configure bochs-2.6.11/configure
 -LIBS="-lncurses  $LIBS"
 +LIBS="-lncurses -ltinfo $LIBS"
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
- /* end confdefs.h.  */
+ 
  
 @@ -25523,7 +25523,7 @@
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncurses_mvaddch" >&5

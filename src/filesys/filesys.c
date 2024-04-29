@@ -7,7 +7,7 @@
 #include "filesys/inode.h"
 #include "filesys/directory.h"
 
-/* Partition that contains the file system. */
+
 struct block *fs_device;
 
 static void do_format (void);
@@ -90,7 +90,7 @@ filesys_remove (const char *name)
   return success;
 }
 
-/* Formats the file system. */
+
 static void
 do_format (void)
 {

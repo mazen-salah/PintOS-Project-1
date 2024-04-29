@@ -56,10 +56,10 @@ static bool use_console_lock;
    counter. */
 static int console_lock_depth;
 
-/* Number of characters written to console. */
+
 static int64_t write_cnt;
 
-/* Enable console locking. */
+
 void
 console_init (void) 
 {
@@ -76,14 +76,14 @@ console_panic (void)
   use_console_lock = false;
 }
 
-/* Prints console statistics. */
+
 void
 console_print_stats (void) 
 {
   printf ("Console: %lld characters output\n", write_cnt);
 }
 
-/* Acquires the console lock. */
+
 static void
 acquire_console (void) 
 {
@@ -96,7 +96,7 @@ acquire_console (void)
     }
 }
 
-/* Releases the console lock. */
+
 static void
 release_console (void) 
 {
@@ -148,7 +148,7 @@ puts (const char *s)
   return 0;
 }
 
-/* Writes the N characters in BUFFER to the console. */
+
 void
 putbuf (const char *buffer, size_t n) 
 {
@@ -158,7 +158,7 @@ putbuf (const char *buffer, size_t n)
   release_console ();
 }
 
-/* Writes C to the vga display and serial port. */
+
 int
 putchar (int c) 
 {
@@ -169,7 +169,7 @@ putchar (int c)
   return c;
 }
 
-/* Helper function for vprintf(). */
+
 static void
 vprintf_helper (char c, void *char_cnt_) 
 {

@@ -15,10 +15,10 @@ main (int argc, char *argv[])
       exit (1);
     }
 
-  /* Print args. */
+  
   printf ("%s %s %s %s\n", argv[0], argv[1], argv[2], argv[3]);
 
-  /* Execute child and wait for it to finish if requested. */
+  
   if (atoi (argv[2]) != 0) 
     {
       snprintf (buffer, sizeof buffer,
@@ -28,7 +28,7 @@ main (int argc, char *argv[])
         retval = wait (pid);
     }
   
-  /* Done. */
+  
   printf ("%s %s: dying, retval=%d\n", argv[1], argv[2], retval);
   exit (retval);
 }

@@ -17,21 +17,21 @@
    protect kernel threads from one another, not from interrupt
    handlers. */
 
-/* Queue buffer size, in bytes. */
+
 #define INTQ_BUFSIZE 64
 
-/* A circular queue of bytes. */
+
 struct intq
   {
-    /* Waiting threads. */
-    struct lock lock;           /* Only one thread may wait at once. */
-    struct thread *not_full;    /* Thread waiting for not-full condition. */
-    struct thread *not_empty;   /* Thread waiting for not-empty condition. */
+    
+    struct lock lock;           
+    struct thread *not_full;    
+    struct thread *not_empty;   
 
-    /* Queue. */
-    uint8_t buf[INTQ_BUFSIZE];  /* Buffer. */
-    int head;                   /* New data is written here. */
-    int tail;                   /* Old data is read here. */
+    
+    uint8_t buf[INTQ_BUFSIZE];  
+    int head;                   
+    int tail;                   
   };
 
 void intq_init (struct intq *);
@@ -40,4 +40,4 @@ bool intq_full (const struct intq *);
 uint8_t intq_getc (struct intq *);
 void intq_putc (struct intq *, uint8_t);
 
-#endif /* devices/intq.h */
+#endif 

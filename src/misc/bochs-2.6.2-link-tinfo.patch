@@ -9,7 +9,7 @@ index be5e0a5..99b2e14 100755
 -LIBS="-lncurses  $LIBS"
 +LIBS="-lncurses -ltinfo $LIBS"
  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
- /* end confdefs.h.  */
+ 
 
 @@ -24770,7 +24770,7 @@ fi
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ncurses_mvaddch" >&5

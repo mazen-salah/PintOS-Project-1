@@ -16,7 +16,7 @@ index c2d6c6b..d37cf12 100644
  
 +extern int jitter;
 +
- #endif  /* BX_BOCHS_H */
+ #endif  
 diff --git a/cpu/exception.cc b/cpu/exception.cc
 index db38d1b..b2c5f29 100644
 --- a/cpu/exception.cc

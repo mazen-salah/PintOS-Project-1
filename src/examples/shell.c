@@ -14,11 +14,11 @@ main (void)
     {
       char command[80];
 
-      /* Read command. */
+      
       printf ("--");
       read_line (command, sizeof command);
       
-      /* Execute command. */
+      
       if (!strcmp (command, "exit"))
         break;
       else if (!memcmp (command, "cd ", 3)) 
@@ -28,7 +28,7 @@ main (void)
         }
       else if (command[0] == '\0') 
         {
-          /* Empty command. */
+          
         }
       else
         {
@@ -68,13 +68,13 @@ read_line (char line[], size_t size)
           backspace (&pos, line);
           break;
 
-        case ('U' - 'A') + 1:       /* Ctrl+U. */
+        case ('U' - 'A') + 1:       
           while (backspace (&pos, line))
             continue;
           break;
 
         default:
-          /* Add character to line. */
+          
           if (pos < line + size - 1) 
             {
               putchar (c);

@@ -16,7 +16,7 @@ main (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Open input file. */
+  
   in_fd = open (argv[1]);
   if (in_fd < 0) 
     {
@@ -24,7 +24,7 @@ main (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Create and open output file. */
+  
   if (!create (argv[2], filesize (in_fd))) 
     {
       printf ("%s: create failed\n", argv[2]);
@@ -37,7 +37,7 @@ main (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Copy data. */
+  
   for (;;) 
     {
       char buffer[1024];

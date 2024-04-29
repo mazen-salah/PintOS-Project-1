@@ -18,11 +18,11 @@
    test. */
 #define MAX_SIZE 64
 
-/* A linked list element. */
+
 struct value 
   {
-    struct list_elem elem;      /* List element. */
-    int value;                  /* Item value. */
+    struct list_elem elem;      
+    int value;                  
   };
 
 static void shuffle (struct value[], size_t);
@@ -31,7 +31,7 @@ static bool value_less (const struct list_elem *, const struct list_elem *,
 static void verify_list_fwd (struct list *, int size);
 static void verify_list_bkwd (struct list *, int size);
 
-/* Test the linked list implementation. */
+
 void
 test (void) 
 {
@@ -50,17 +50,17 @@ test (void)
           struct list_elem *e;
           int i, ofs;
 
-          /* Put values 0...SIZE in random order in VALUES. */
+          
           for (i = 0; i < size; i++)
             values[i].value = i;
           shuffle (values, size);
   
-          /* Assemble list. */
+          
           list_init (&list);
           for (i = 0; i < size; i++)
             list_push_back (&list, &values[i].elem);
 
-          /* Verify correct minimum and maximum elements. */
+          
           e = list_min (&list, value_less, NULL);
           ASSERT (size ? list_entry (e, struct value, elem)->value == 0
                   : e == list_begin (&list));
@@ -68,11 +68,11 @@ test (void)
           ASSERT (size ? list_entry (e, struct value, elem)->value == size - 1
                   : e == list_begin (&list));
 
-          /* Sort and verify list. */
+          
           list_sort (&list, value_less, NULL);
           verify_list_fwd (&list, size);
 
-          /* Reverse and verify list. */
+          
           list_reverse (&list);
           verify_list_bkwd (&list, size);
 
@@ -85,7 +85,7 @@ test (void)
                                  value_less, NULL);
           verify_list_fwd (&list, size);
 
-          /* Duplicate some items, uniquify, and verify. */
+          
           ofs = size;
           for (e = list_begin (&list); e != list_end (&list);
                e = list_next (e))
@@ -108,7 +108,7 @@ test (void)
   printf ("list: PASS\n");
 }
 
-/* Shuffles the CNT elements in ARRAY into random order. */
+
 static void
 shuffle (struct value *array, size_t cnt) 
 {

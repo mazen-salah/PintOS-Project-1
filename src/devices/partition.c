@@ -6,11 +6,11 @@
 #include "devices/block.h"
 #include "threads/malloc.h"
 
-/* A partition of a block device. */
+
 struct partition
   {
-    struct block *block;                /* Underlying block device. */
-    block_sector_t start;               /* First sector within device. */
+    struct block *block;                
+    block_sector_t start;               
   };
 
 static struct block_operations partition_operations;
@@ -23,7 +23,7 @@ static void found_partition (struct block *, uint8_t type,
                              int part_nr);
 static const char *partition_type_name (uint8_t);
 
-/* Scans BLOCK for partitions of interest to Pintos. */
+
 void
 partition_scan (struct block *block)
 {
@@ -51,31 +51,31 @@ read_partition_table (struct block *block, block_sector_t sector,
                       block_sector_t primary_extended_sector,
                       int *part_nr)
 {
-  /* Format of a partition table entry.  See [Partitions]. */
+  
   struct partition_table_entry
     {
-      uint8_t bootable;         /* 0x00=not bootable, 0x80=bootable. */
-      uint8_t start_chs[3];     /* Encoded starting cylinder, head, sector. */
-      uint8_t type;             /* Partition type (see partition_type_name). */
-      uint8_t end_chs[3];       /* Encoded ending cylinder, head, sector. */
-      uint32_t offset;          /* Start sector offset from partition table. */
-      uint32_t size;            /* Number of sectors. */
+      uint8_t bootable;         
+      uint8_t start_chs[3];     
+      uint8_t type;             
+      uint8_t end_chs[3];       
+      uint32_t offset;          
+      uint32_t size;            
     }
   PACKED;
 
-  /* Partition table sector. */
+  
   struct partition_table
     {
-      uint8_t loader[446];      /* Loader, in top-level partition table. */
-      struct partition_table_entry partitions[4];       /* Table entries. */
-      uint16_t signature;       /* Should be 0xaa55. */
+      uint8_t loader[446];      
+      struct partition_table_entry partitions[4];       
+      uint16_t signature;       
     }
   PACKED;
 
   struct partition_table *pt;
   size_t i;
 
-  /* Check SECTOR validity. */
+  
   if (sector >= block_size (block))
     {
       printf ("%s: Partition table at sector %"PRDSNu" past end of device.\n",
@@ -83,14 +83,14 @@ read_partition_table (struct block *block, block_sector_t sector,
       return;
     }
 
-  /* Read sector. */
+  
   ASSERT (sizeof *pt == BLOCK_SECTOR_SIZE);
   pt = malloc (sizeof *pt);
   if (pt == NULL)
     PANIC ("Failed to allocate memory for partition table.");
   block_read (block, 0, pt);
 
-  /* Check signature. */
+  
   if (pt->signature != 0xaa55)
     {
       if (primary_extended_sector == 0)
@@ -102,19 +102,19 @@ read_partition_table (struct block *block, block_sector_t sector,
       return;
     }
 
-  /* Parse partitions. */
+  
   for (i = 0; i < sizeof pt->partitions / sizeof *pt->partitions; i++)
     {
       struct partition_table_entry *e = &pt->partitions[i];
 
       if (e->size == 0 || e->type == 0)
         {
-          /* Ignore empty partition. */
+          
         }
-      else if (e->type == 0x05       /* Extended partition. */
-               || e->type == 0x0f    /* Windows 98 extended partition. */
-               || e->type == 0x85    /* Linux extended partition. */
-               || e->type == 0xc5)   /* DR-DOS extended partition. */
+      else if (e->type == 0x05       
+               || e->type == 0x0f    
+               || e->type == 0x85    
+               || e->type == 0xc5)   
         {
           printf ("%s: Extended partition in sector %"PRDSNu"\n",
                   block_name (block), sector);
@@ -185,7 +185,7 @@ found_partition (struct block *block, uint8_t part_type,
     }
 }
 
-/* Returns a human-readable name for the given partition TYPE. */
+
 static const char *
 partition_type_name (uint8_t type)
 {

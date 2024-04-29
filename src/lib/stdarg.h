@@ -11,4 +11,4 @@ typedef __builtin_va_list va_list;
 #define va_arg(LIST, TYPE)	__builtin_va_arg (LIST, TYPE)
 #define va_copy(DST, SRC)	__builtin_va_copy (DST, SRC)
 
-#endif /* lib/stdarg.h */
+#endif 

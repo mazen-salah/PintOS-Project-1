@@ -48,7 +48,7 @@ test_priority_donate_chain (void)
   struct lock locks[NESTING_DEPTH - 1];
   struct lock_pair lock_pairs[NESTING_DEPTH];
 
-  /* This test does not work with the MLFQS. */
+  
   ASSERT (!thread_mlfqs);
 
   thread_set_priority (PRI_MIN);

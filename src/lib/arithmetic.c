@@ -153,35 +153,35 @@ smod64 (int64_t n, int64_t d)
   return n - d * sdiv64 (n, d);
 }
 
-/* These are the routines that GCC calls. */
+
 
 long long __divdi3 (long long n, long long d);
 long long __moddi3 (long long n, long long d);
 unsigned long long __udivdi3 (unsigned long long n, unsigned long long d);
 unsigned long long __umoddi3 (unsigned long long n, unsigned long long d);
 
-/* Signed 64-bit division. */
+
 long long
 __divdi3 (long long n, long long d) 
 {
   return sdiv64 (n, d);
 }
 
-/* Signed 64-bit remainder. */
+
 long long
 __moddi3 (long long n, long long d) 
 {
   return smod64 (n, d);
 }
 
-/* Unsigned 64-bit division. */
+
 unsigned long long
 __udivdi3 (unsigned long long n, unsigned long long d) 
 {
   return udiv64 (n, d);
 }
 
-/* Unsigned 64-bit remainder. */
+
 unsigned long long
 __umoddi3 (unsigned long long n, unsigned long long d) 
 {

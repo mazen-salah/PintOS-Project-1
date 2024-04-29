@@ -17,10 +17,10 @@
 
 struct simple_thread_data 
   {
-    int id;                     /* Sleeper ID. */
-    int iterations;             /* Iterations so far. */
-    struct lock *lock;          /* Lock on output. */
-    int **op;                   /* Output buffer position. */
+    int id;                     
+    int iterations;             
+    struct lock *lock;          
+    int **op;                   
   };
 
 #define THREAD_CNT 16
@@ -36,10 +36,10 @@ test_priority_fifo (void)
   int *output, *op;
   int i, cnt;
 
-  /* This test does not work with the MLFQS. */
+  
   ASSERT (!thread_mlfqs);
 
-  /* Make sure our priority is the default. */
+  
   ASSERT (thread_get_priority () == PRI_DEFAULT);
 
   msg ("%d threads will iterate %d times in the same order each time.",
@@ -64,7 +64,7 @@ test_priority_fifo (void)
     }
 
   thread_set_priority (PRI_DEFAULT);
-  /* All the other threads now run to termination here. */
+  
   ASSERT (lock.holder == NULL);
 
   cnt = 0;

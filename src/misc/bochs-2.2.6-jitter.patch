@@ -58,4 +58,4 @@ diff -up /home/blp/cs140/bochs-2.2.6/bochs.h\~ /home/blp/cs140/bochs-2.2.6/bochs
  
 +extern int jitter;
 +
- #endif  /* BX_BOCHS_H */
+ #endif  

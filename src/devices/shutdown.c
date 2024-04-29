@@ -14,10 +14,10 @@
 #include "filesys/filesys.h"
 #endif
 
-/* Keyboard control register port. */
+
 #define CONTROL_REG 0x64
 
-/* How to shut down when shutdown() is called. */
+
 static enum shutdown_type how = SHUTDOWN_NONE;
 
 static void print_stats (void);
@@ -39,7 +39,7 @@ shutdown (void)
       break;
 
     default:
-      /* Nothing to do. */
+      
       break;
     }
 }
@@ -52,7 +52,7 @@ shutdown_configure (enum shutdown_type type)
   how = type;
 }
 
-/* Reboots the machine via the keyboard controller. */
+
 void
 shutdown_reboot (void)
 {
@@ -99,7 +99,7 @@ shutdown_power_off (void)
   printf ("Powering off...\n");
   serial_flush ();
 
-  /* ACPI power-off */
+  
   outw (0xB004, 0x2000);
 
   /* This is a special power-off sequence supported by Bochs and
@@ -119,12 +119,12 @@ shutdown_power_off (void)
      that automatically.)  */
   asm volatile ("cli; hlt" : : : "memory");
 
-  /* None of those worked. */
+  
   printf ("still running...\n");
   for (;;);
 }
 
-/* Print statistics about Pintos execution. */
+
 static void
 print_stats (void)
 {

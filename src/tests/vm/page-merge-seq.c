@@ -12,8 +12,8 @@
    file system that had 126 direct blocks each pointing to a
    single disk sector.  We could raise it now. */
 #define CHUNK_SIZE (126 * 512)
-#define CHUNK_CNT 16                            /* Number of chunks. */
-#define DATA_SIZE (CHUNK_CNT * CHUNK_SIZE)      /* Buffer size. */
+#define CHUNK_CNT 16                            
+#define DATA_SIZE (CHUNK_CNT * CHUNK_SIZE)      
 
 unsigned char buf1[DATA_SIZE], buf2[DATA_SIZE];
 size_t histogram[256];
@@ -34,7 +34,7 @@ init (void)
     histogram[buf1[i]]++;
 }
 
-/* Sort each chunk of buf1 using a subprocess. */
+
 static void
 sort_chunks (void)
 {
@@ -48,18 +48,18 @@ sort_chunks (void)
 
       msg ("sort chunk %zu", i);
 
-      /* Write this chunk to a file. */
+      
       quiet = true;
       CHECK ((handle = open ("buffer")) > 1, "open \"buffer\"");
       write (handle, buf1 + CHUNK_SIZE * i, CHUNK_SIZE);
       close (handle);
 
-      /* Sort with subprocess. */
+      
       CHECK ((child = exec ("child-sort buffer")) != -1,
              "exec \"child-sort buffer\"");
       CHECK (wait (child) == 123, "wait for child-sort");
 
-      /* Read chunk back from file. */
+      
       CHECK ((handle = open ("buffer")) > 1, "open \"buffer\"");
       read (handle, buf1 + CHUNK_SIZE * i, CHUNK_SIZE);
       close (handle);
@@ -68,7 +68,7 @@ sort_chunks (void)
     }
 }
 
-/* Merge the sorted chunks in buf1 into a fully sorted buf2. */
+
 static void
 merge (void) 
 {
@@ -79,22 +79,22 @@ merge (void)
 
   msg ("merge");
 
-  /* Initialize merge pointers. */
+  
   mp_left = CHUNK_CNT;
   for (i = 0; i < CHUNK_CNT; i++)
     mp[i] = buf1 + CHUNK_SIZE * i;
 
-  /* Merge. */
+  
   op = buf2;
   while (mp_left > 0) 
     {
-      /* Find smallest value. */
+      
       size_t min = 0;
       for (i = 1; i < mp_left; i++)
         if (*mp[i] < *mp[min])
           min = i;
 
-      /* Append value to buf2. */
+      
       *op++ = *mp[min];
 
       /* Advance merge pointer.

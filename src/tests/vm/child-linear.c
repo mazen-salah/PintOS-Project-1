@@ -19,15 +19,15 @@ main (int argc, char *argv[])
 
   test_name = "child-linear";
 
-  /* Encrypt zeros. */
+  
   arc4_init (&arc4, key, strlen (key));
   arc4_crypt (&arc4, buf, SIZE);
 
-  /* Decrypt back to zeros. */
+  
   arc4_init (&arc4, key, strlen (key));
   arc4_crypt (&arc4, buf, SIZE);
 
-  /* Check that it's all zeros. */
+  
   for (i = 0; i < SIZE; i++)
     if (buf[i] != '\0')
       fail ("byte %zu != 0", i);

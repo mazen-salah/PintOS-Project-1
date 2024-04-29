@@ -17,10 +17,10 @@ static thread_func simple_thread_func;
 void
 test_priority_preempt (void) 
 {
-  /* This test does not work with the MLFQS. */
+  
   ASSERT (!thread_mlfqs);
 
-  /* Make sure our priority is the default. */
+  
   ASSERT (thread_get_priority () == PRI_DEFAULT);
 
   thread_create ("high-priority", PRI_DEFAULT + 1, simple_thread_func, NULL);

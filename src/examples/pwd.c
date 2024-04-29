@@ -79,11 +79,11 @@ getcwd (char *cwd, size_t cwd_size)
 
   int child_inum;
 
-  /* Make sure there's enough space for at least "/". */
+  
   if (cwd_size < 2)
     return false;
 
-  /* Get inumber for current directory. */
+  
   if (!get_inumber (".", &child_inum))
     return false;
 
@@ -92,14 +92,14 @@ getcwd (char *cwd, size_t cwd_size)
     {
       int parent_inum, parent_fd;
 
-      /* Compose "../../../..", etc., in NAME. */
+      
       if ((namep - name) > MAX_LEVEL * 3)
         return false;
       *namep++ = '.';
       *namep++ = '.';
       *namep = '\0';
 
-      /* Open directory. */
+      
       parent_fd = open (name);
       if (parent_fd < 0)
         return false;
@@ -126,15 +126,15 @@ getcwd (char *cwd, size_t cwd_size)
         }
       close (parent_fd);
 
-      /* Prepend "/name" to CWD. */
+      
       if (!prepend (namep - 1, cwd, &cwd_len, cwd_size))
         return false;
 
-      /* Move up. */
+      
       child_inum = parent_inum;
     }
 
-  /* Finalize CWD. */
+  
   if (cwd_len > 0) 
     {
       /* Move the string to the beginning of CWD,
@@ -144,7 +144,7 @@ getcwd (char *cwd, size_t cwd_size)
     }
   else 
     {
-      /* Special case for the root. */
+      
       strlcpy (cwd, "/", cwd_size); 
     }
   

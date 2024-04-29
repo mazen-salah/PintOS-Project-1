@@ -14,44 +14,44 @@
 
    Refer to [PC16650D] for hardware information. */
 
-/* I/O port base address for the first serial port. */
+
 #define IO_BASE 0x3f8
 
-/* DLAB=0 registers. */
-#define RBR_REG (IO_BASE + 0)   /* Receiver Buffer Reg. (read-only). */
-#define THR_REG (IO_BASE + 0)   /* Transmitter Holding Reg. (write-only). */
-#define IER_REG (IO_BASE + 1)   /* Interrupt Enable Reg.. */
 
-/* DLAB=1 registers. */
-#define LS_REG (IO_BASE + 0)    /* Divisor Latch (LSB). */
-#define MS_REG (IO_BASE + 1)    /* Divisor Latch (MSB). */
+#define RBR_REG (IO_BASE + 0)   
+#define THR_REG (IO_BASE + 0)   
+#define IER_REG (IO_BASE + 1)   
 
-/* DLAB-insensitive registers. */
-#define IIR_REG (IO_BASE + 2)   /* Interrupt Identification Reg. (read-only) */
-#define FCR_REG (IO_BASE + 2)   /* FIFO Control Reg. (write-only). */
-#define LCR_REG (IO_BASE + 3)   /* Line Control Register. */
-#define MCR_REG (IO_BASE + 4)   /* MODEM Control Register. */
-#define LSR_REG (IO_BASE + 5)   /* Line Status Register (read-only). */
 
-/* Interrupt Enable Register bits. */
-#define IER_RECV 0x01           /* Interrupt when data received. */
-#define IER_XMIT 0x02           /* Interrupt when transmit finishes. */
+#define LS_REG (IO_BASE + 0)    
+#define MS_REG (IO_BASE + 1)    
 
-/* Line Control Register bits. */
-#define LCR_N81 0x03            /* No parity, 8 data bits, 1 stop bit. */
-#define LCR_DLAB 0x80           /* Divisor Latch Access Bit (DLAB). */
 
-/* MODEM Control Register. */
-#define MCR_OUT2 0x08           /* Output line 2. */
+#define IIR_REG (IO_BASE + 2)   
+#define FCR_REG (IO_BASE + 2)   
+#define LCR_REG (IO_BASE + 3)   
+#define MCR_REG (IO_BASE + 4)   
+#define LSR_REG (IO_BASE + 5)   
 
-/* Line Status Register. */
-#define LSR_DR 0x01             /* Data Ready: received data byte is in RBR. */
-#define LSR_THRE 0x20           /* THR Empty. */
+
+#define IER_RECV 0x01           
+#define IER_XMIT 0x02           
+
+
+#define LCR_N81 0x03            
+#define LCR_DLAB 0x80           
+
+
+#define MCR_OUT2 0x08           
+
+
+#define LSR_DR 0x01             
+#define LSR_THRE 0x20           
 
-/* Transmission mode. */
+
 static enum { UNINIT, POLL, QUEUE } mode;
 
-/* Data to be transmitted. */
+
 static struct intq txq;
 
 static void set_serial (int bps);
@@ -67,10 +67,10 @@ static void
 init_poll (void) 
 {
   ASSERT (mode == UNINIT);
-  outb (IER_REG, 0);                    /* Turn off all interrupts. */
-  outb (FCR_REG, 0);                    /* Disable FIFO. */
-  set_serial (9600);                    /* 9.6 kbps, N-8-1. */
-  outb (MCR_REG, MCR_OUT2);             /* Required to enable interrupts. */
+  outb (IER_REG, 0);                    
+  outb (FCR_REG, 0);                    
+  set_serial (9600);                    
+  outb (MCR_REG, MCR_OUT2);             
   intq_init (&txq);
   mode = POLL;
 } 
@@ -94,7 +94,7 @@ serial_init_queue (void)
   intr_set_level (old_level);
 }
 
-/* Sends BYTE to the serial port. */
+
 void
 serial_putc (uint8_t byte) 
 {
@@ -152,27 +152,27 @@ serial_notify (void)
     write_ier ();
 }
 
-/* Configures the serial port for BPS bits per second. */
+
 static void
 set_serial (int bps)
 {
-  int base_rate = 1843200 / 16;         /* Base rate of 16550A, in Hz. */
-  uint16_t divisor = base_rate / bps;   /* Clock rate divisor. */
+  int base_rate = 1843200 / 16;         
+  uint16_t divisor = base_rate / bps;   
 
   ASSERT (bps >= 300 && bps <= 115200);
 
-  /* Enable DLAB. */
+  
   outb (LCR_REG, LCR_N81 | LCR_DLAB);
 
-  /* Set data rate. */
+  
   outb (LS_REG, divisor & 0xff);
   outb (MS_REG, divisor >> 8);
   
-  /* Reset DLAB. */
+  
   outb (LCR_REG, LCR_N81);
 }
 
-/* Update interrupt enable register. */
+
 static void
 write_ier (void) 
 {
@@ -205,7 +205,7 @@ putc_poll (uint8_t byte)
   outb (THR_REG, byte);
 }
 
-/* Serial interrupt handler. */
+
 static void
 serial_interrupt (struct intr_frame *f UNUSED) 
 {
@@ -223,6 +223,6 @@ serial_interrupt (struct intr_frame *f UNUSED)
   while (!intq_empty (&txq) && (inb (LSR_REG) & LSR_THRE) != 0) 
     outb (THR_REG, intq_getc (&txq));
 
-  /* Update interrupt enable register based on queue status. */
+  
   write_ier ();
 }

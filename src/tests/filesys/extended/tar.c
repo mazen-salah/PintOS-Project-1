@@ -105,7 +105,7 @@ archive_file (char file_name[], size_t file_name_size,
         }
       else
         {
-          /* Nothing to do: don't try to archive the archive file. */
+          
           success = true;
         }
   

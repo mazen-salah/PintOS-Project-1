@@ -42,7 +42,7 @@ debug_panic (const char *file, int line, const char *function,
             file, line, function);
   else 
     {
-      /* Don't print anything: that's probably why we recursed. */
+      
     }
 
   serial_flush ();
@@ -112,7 +112,7 @@ print_stacktrace(struct thread *t, void *aux UNUSED)
   printf (".\n");
 }
 
-/* Prints call stack of all threads. */
+
 void
 debug_backtrace_all (void)
 {

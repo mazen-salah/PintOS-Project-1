@@ -6,19 +6,19 @@
 #include "filesys/inode.h"
 #include "threads/malloc.h"
 
-/* A directory. */
+
 struct dir 
   {
-    struct inode *inode;                /* Backing store. */
-    off_t pos;                          /* Current position. */
+    struct inode *inode;                
+    off_t pos;                          
   };
 
-/* A single directory entry. */
+
 struct dir_entry 
   {
-    block_sector_t inode_sector;        /* Sector number of header. */
-    char name[NAME_MAX + 1];            /* Null terminated file name. */
-    bool in_use;                        /* In use or free? */
+    block_sector_t inode_sector;        
+    char name[NAME_MAX + 1];            
+    bool in_use;                        
   };
 
 /* Creates a directory with space for ENTRY_CNT entries in the
@@ -65,7 +65,7 @@ dir_reopen (struct dir *dir)
   return dir_open (inode_reopen (dir->inode));
 }
 
-/* Destroys DIR and frees associated resources. */
+
 void
 dir_close (struct dir *dir) 
 {
@@ -76,7 +76,7 @@ dir_close (struct dir *dir)
     }
 }
 
-/* Returns the inode encapsulated by DIR. */
+
 struct inode *
 dir_get_inode (struct dir *dir) 
 {
@@ -148,11 +148,11 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
 
-  /* Check NAME for validity. */
+  
   if (*name == '\0' || strlen (name) > NAME_MAX)
     return false;
 
-  /* Check that NAME is not in use. */
+  
   if (lookup (dir, name, NULL, NULL))
     goto done;
 
@@ -168,7 +168,7 @@ dir_add (struct dir *dir, const char *name, block_sector_t inode_sector)
     if (!e.in_use)
       break;
 
-  /* Write slot. */
+  
   e.in_use = true;
   strlcpy (e.name, name, sizeof e.name);
   e.inode_sector = inode_sector;
@@ -192,21 +192,21 @@ dir_remove (struct dir *dir, const char *name)
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
 
-  /* Find directory entry. */
+  
   if (!lookup (dir, name, &e, &ofs))
     goto done;
 
-  /* Open inode. */
+  
   inode = inode_open (e.inode_sector);
   if (inode == NULL)
     goto done;
 
-  /* Erase directory entry. */
+  
   e.in_use = false;
   if (inode_write_at (dir->inode, &e, sizeof e, ofs) != sizeof e) 
     goto done;
 
-  /* Remove inode. */
+  
   inode_remove (inode);
   success = true;
 

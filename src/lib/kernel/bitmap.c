@@ -18,7 +18,7 @@
    and so on. */
 typedef unsigned long elem_type;
 
-/* Number of bits in an element. */
+
 #define ELEM_BITS (sizeof (elem_type) * CHAR_BIT)
 
 /* From the outside, a bitmap is an array of bits.  From the
@@ -26,8 +26,8 @@ typedef unsigned long elem_type;
    simulates an array of bits. */
 struct bitmap
   {
-    size_t bit_cnt;     /* Number of bits. */
-    elem_type *bits;    /* Elements that represent bits. */
+    size_t bit_cnt;     
+    elem_type *bits;    
   };
 
 /* Returns the index of the element that contains the bit
@@ -46,14 +46,14 @@ bit_mask (size_t bit_idx)
   return (elem_type) 1 << (bit_idx % ELEM_BITS);
 }
 
-/* Returns the number of elements required for BIT_CNT bits. */
+
 static inline size_t
 elem_cnt (size_t bit_cnt)
 {
   return DIV_ROUND_UP (bit_cnt, ELEM_BITS);
 }
 
-/* Returns the number of bytes required for BIT_CNT bits. */
+
 static inline size_t
 byte_cnt (size_t bit_cnt)
 {
@@ -69,7 +69,7 @@ last_mask (const struct bitmap *b)
   return last_bits ? ((elem_type) 1 << last_bits) - 1 : (elem_type) -1;
 }
 
-/* Creation and destruction. */
+
 
 /* Creates and returns a pointer to a newly allocated bitmap with room for
    BIT_CNT (or more) bits.  Returns a null pointer if memory allocation fails.
@@ -129,18 +129,18 @@ bitmap_destroy (struct bitmap *b)
     }
 }
 
-/* Bitmap size. */
 
-/* Returns the number of bits in B. */
+
+
 size_t
 bitmap_size (const struct bitmap *b)
 {
   return b->bit_cnt;
 }
 
-/* Setting and testing single bits. */
 
-/* Atomically sets the bit numbered IDX in B to VALUE. */
+
+
 void
 bitmap_set (struct bitmap *b, size_t idx, bool value) 
 {
@@ -152,7 +152,7 @@ bitmap_set (struct bitmap *b, size_t idx, bool value)
     bitmap_reset (b, idx);
 }
 
-/* Atomically sets the bit numbered BIT_IDX in B to true. */
+
 void
 bitmap_mark (struct bitmap *b, size_t bit_idx) 
 {
@@ -165,7 +165,7 @@ bitmap_mark (struct bitmap *b, size_t bit_idx)
   asm ("orl %1, %0" : "=m" (b->bits[idx]) : "r" (mask) : "cc");
 }
 
-/* Atomically sets the bit numbered BIT_IDX in B to false. */
+
 void
 bitmap_reset (struct bitmap *b, size_t bit_idx) 
 {
@@ -193,7 +193,7 @@ bitmap_flip (struct bitmap *b, size_t bit_idx)
   asm ("xorl %1, %0" : "=m" (b->bits[idx]) : "r" (mask) : "cc");
 }
 
-/* Returns the value of the bit numbered IDX in B. */
+
 bool
 bitmap_test (const struct bitmap *b, size_t idx) 
 {
@@ -202,9 +202,9 @@ bitmap_test (const struct bitmap *b, size_t idx)
   return (b->bits[elem_idx (idx)] & bit_mask (idx)) != 0;
 }
 
-/* Setting and testing multiple bits. */
 
-/* Sets all bits in B to VALUE. */
+
+
 void
 bitmap_set_all (struct bitmap *b, bool value) 
 {
@@ -213,7 +213,7 @@ bitmap_set_all (struct bitmap *b, bool value)
   bitmap_set_multiple (b, 0, bitmap_size (b), value);
 }
 
-/* Sets the CNT bits starting at START in B to VALUE. */
+
 void
 bitmap_set_multiple (struct bitmap *b, size_t start, size_t cnt, bool value) 
 {
@@ -286,7 +286,7 @@ bitmap_all (const struct bitmap *b, size_t start, size_t cnt)
   return !bitmap_contains (b, start, cnt, false);
 }
 
-/* Finding set or unset bits. */
+
 
 /* Finds and returns the starting index of the first group of CNT
    consecutive bits in B at or after START that are all set to
@@ -325,10 +325,10 @@ bitmap_scan_and_flip (struct bitmap *b, size_t start, size_t cnt, bool value)
   return idx;
 }
 
-/* File input and output. */
+
 
 #ifdef FILESYS
-/* Returns the number of bytes needed to store B in a file. */
+
 size_t
 bitmap_file_size (const struct bitmap *b) 
 {
@@ -358,11 +358,11 @@ bitmap_write (const struct bitmap *b, struct file *file)
   off_t size = byte_cnt (b->bit_cnt);
   return file_write_at (file, b->bits, size, 0) == size;
 }
-#endif /* FILESYS */
+#endif 
 
-/* Debugging. */
 
-/* Dumps the contents of B to the console as hexadecimal. */
+
+
 void
 bitmap_dump (const struct bitmap *b) 
 {

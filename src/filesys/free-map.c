@@ -5,10 +5,10 @@
 #include "filesys/filesys.h"
 #include "filesys/inode.h"
 
-static struct file *free_map_file;   /* Free map file. */
-static struct bitmap *free_map;      /* Free map, one bit per sector. */
+static struct file *free_map_file;   
+static struct bitmap *free_map;      
 
-/* Initializes the free map. */
+
 void
 free_map_init (void) 
 {
@@ -40,7 +40,7 @@ free_map_allocate (size_t cnt, block_sector_t *sectorp)
   return sector != BITMAP_ERROR;
 }
 
-/* Makes CNT sectors starting at SECTOR available for use. */
+
 void
 free_map_release (block_sector_t sector, size_t cnt)
 {
@@ -49,7 +49,7 @@ free_map_release (block_sector_t sector, size_t cnt)
   bitmap_write (free_map, free_map_file);
 }
 
-/* Opens the free map file and reads it from disk. */
+
 void
 free_map_open (void) 
 {
@@ -60,7 +60,7 @@ free_map_open (void)
     PANIC ("can't read free map");
 }
 
-/* Writes the free map to disk and closes the free map file. */
+
 void
 free_map_close (void) 
 {
@@ -72,11 +72,11 @@ free_map_close (void)
 void
 free_map_create (void) 
 {
-  /* Create inode. */
+  
   if (!inode_create (FREE_MAP_SECTOR, bitmap_file_size (free_map)))
     PANIC ("free map creation failed");
 
-  /* Write bitmap to file. */
+  
   free_map_file = file_open (inode_open (FREE_MAP_SECTOR));
   if (free_map_file == NULL)
     PANIC ("can't open free map");

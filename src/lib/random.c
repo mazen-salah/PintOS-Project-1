@@ -13,14 +13,14 @@
    See http://en.wikipedia.org/wiki/RC4_(cipher) for information
    on RC4.*/
 
-/* RC4 state. */
-static uint8_t s[256];          /* S[]. */
-static uint8_t s_i, s_j;        /* i, j. */
 
-/* Already initialized? */
+static uint8_t s[256];          
+static uint8_t s_i, s_j;        
+
+
 static bool inited;     
 
-/* Swaps the bytes pointed to by A and B. */
+
 static inline void
 swap_byte (uint8_t *a, uint8_t *b) 
 {
@@ -29,7 +29,7 @@ swap_byte (uint8_t *a, uint8_t *b)
   *b = t;
 }
 
-/* Initializes or reinitializes the PRNG with the given SEED. */
+
 void
 random_init (unsigned seed)
 {
@@ -52,7 +52,7 @@ random_init (unsigned seed)
   inited = true;
 }
 
-/* Writes SIZE random bytes into BUF. */
+
 void
 random_bytes (void *buf_, size_t size) 
 {

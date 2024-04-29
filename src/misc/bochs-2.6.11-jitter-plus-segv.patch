@@ -15,7 +15,7 @@ diff -ru bochs-2.6.11.dist/bochs.h bochs-2.6.11/bochs.h
  
 +extern int jitter;
 +
- #endif  /* BX_BOCHS_H */
+ #endif  
 Only in bochs-2.6.11: bochs.h.orig
 diff -ru bochs-2.6.11.dist/cpu/exception.cc bochs-2.6.11/cpu/exception.cc
 --- bochs-2.6.11.dist/cpu/exception.cc	2019-12-26 08:48:33.074097000 -0800

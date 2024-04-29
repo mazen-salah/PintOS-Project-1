@@ -5,26 +5,26 @@
 #include "devices/ide.h"
 #include "threads/malloc.h"
 
-/* A block device. */
+
 struct block
   {
-    struct list_elem list_elem;         /* Element in all_blocks. */
+    struct list_elem list_elem;         
 
-    char name[16];                      /* Block device name. */
-    enum block_type type;                /* Type of block device. */
-    block_sector_t size;                 /* Size in sectors. */
+    char name[16];                      
+    enum block_type type;                
+    block_sector_t size;                 
 
-    const struct block_operations *ops;  /* Driver operations. */
-    void *aux;                          /* Extra data owned by driver. */
+    const struct block_operations *ops;  
+    void *aux;                          
 
-    unsigned long long read_cnt;        /* Number of sectors read. */
-    unsigned long long write_cnt;       /* Number of sectors written. */
+    unsigned long long read_cnt;        
+    unsigned long long write_cnt;       
   };
 
-/* List of all block devices. */
+
 static struct list all_blocks = LIST_INITIALIZER (all_blocks);
 
-/* The block block assigned to each Pintos role. */
+
 static struct block *block_by_role[BLOCK_ROLE_CNT];
 
 static struct block *list_elem_to_block (struct list_elem *);
@@ -57,7 +57,7 @@ block_get_role (enum block_type role)
   return block_by_role[role];
 }
 
-/* Assigns BLOCK the given ROLE. */
+
 void
 block_set_role (enum block_type role, struct block *block)
 {
@@ -139,28 +139,28 @@ block_write (struct block *block, block_sector_t sector, const void *buffer)
   block->write_cnt++;
 }
 
-/* Returns the number of sectors in BLOCK. */
+
 block_sector_t
 block_size (struct block *block)
 {
   return block->size;
 }
 
-/* Returns BLOCK's name (e.g. "hda"). */
+
 const char *
 block_name (struct block *block)
 {
   return block->name;
 }
 
-/* Returns BLOCK's type. */
+
 enum block_type
 block_type (struct block *block)
 {
   return block->type;
 }
 
-/* Prints statistics for each block device used for a Pintos role. */
+
 void
 block_print_stats (void)
 {

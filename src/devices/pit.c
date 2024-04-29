@@ -7,11 +7,11 @@
 /* Interface to 8254 Programmable Interrupt Timer (PIT).
    Refer to [8254] for details. */
 
-/* 8254 registers. */
-#define PIT_PORT_CONTROL          0x43                /* Control port. */
-#define PIT_PORT_COUNTER(CHANNEL) (0x40 + (CHANNEL))  /* Counter port. */
 
-/* PIT cycles per second. */
+#define PIT_PORT_CONTROL          0x43                
+#define PIT_PORT_COUNTER(CHANNEL) (0x40 + (CHANNEL))  
+
+
 #define PIT_HZ 1193180
 
 /* Configure the given CHANNEL in the PIT.  In a PC, the PIT's
@@ -74,7 +74,7 @@ pit_configure_channel (int channel, int mode, int frequency)
   else
     count = (PIT_HZ + frequency / 2) / frequency;
 
-  /* Configure the PIT mode and load its counters. */
+  
   old_level = intr_disable ();
   outb (PIT_PORT_CONTROL, (channel << 6) | 0x30 | (mode << 1));
   outb (PIT_PORT_COUNTER (channel), count);

@@ -3,7 +3,7 @@
 #include <debug.h>
 #include <random.h>
 
-/* Picks a pivot for the quicksort from the SIZE bytes in BUF. */
+
 static unsigned char
 pick_pivot (unsigned char *buf, size_t size) 
 {
@@ -32,7 +32,7 @@ is_partitioned (const unsigned char *array, size_t size,
   return true;
 }
 
-/* Swaps the bytes at *A and *B. */
+
 static void
 swap (unsigned char *a, unsigned char *b) 
 {

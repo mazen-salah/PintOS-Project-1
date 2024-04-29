@@ -1,4 +1,4 @@
-/* -*- c -*- */
+
 
 #include <random.h>
 #include "tests/filesys/seq-test.h"

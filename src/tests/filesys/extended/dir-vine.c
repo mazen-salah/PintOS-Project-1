@@ -29,7 +29,7 @@ test_main (void)
       char contents[128];
       int fd;
 
-      /* Create file. */
+      
       snprintf (file_name, sizeof file_name, "file%d", i);
       if (!create (file_name, 0))
         break;
@@ -43,7 +43,7 @@ test_main (void)
         }
       close (fd);
       
-      /* Create directory. */
+      
       snprintf (dir_name, sizeof dir_name, "dir%d", i);
       if (!mkdir (dir_name)) 
         {
@@ -51,7 +51,7 @@ test_main (void)
           break; 
         }
 
-      /* Check for file and directory. */
+      
       CHECK ((fd = open (".")) > 1, "open \".\"");
       CHECK (readdir (fd, name[0]), "readdir \".\"");
       CHECK (readdir (fd, name[1]), "readdir \".\"");
@@ -63,7 +63,7 @@ test_main (void)
              file_name, dir_name, name[0], name[1]);
       close (fd);
 
-      /* Descend into directory. */
+      
       CHECK (chdir (dir_name), "chdir \"%s\"", dir_name);
     }
   CHECK (i > 200, "created files and directories only to level %d", i);

@@ -18,7 +18,7 @@ main (int argc, char *argv[])
       void *data = (void *) 0x10000000;
       int size;
 
-      /* Open input file. */
+      
       fd = open (argv[i]);
       if (fd < 0) 
         {
@@ -27,7 +27,7 @@ main (int argc, char *argv[])
         }
       size = filesize (fd);
 
-      /* Map files. */
+      
       map = mmap (fd, data);
       if (map == MAP_FAILED) 
         {
@@ -35,10 +35,10 @@ main (int argc, char *argv[])
           return EXIT_FAILURE;
         }
 
-      /* Write file to console. */
+      
       write (STDOUT_FILENO, data, size);
 
-      /* Unmap files (optional). */
+      
       munmap (map);
     }
   return EXIT_SUCCESS;

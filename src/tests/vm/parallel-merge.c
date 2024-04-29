@@ -11,8 +11,8 @@
 #include "tests/main.h"
 
 #define CHUNK_SIZE (128 * 1024)
-#define CHUNK_CNT 8                             /* Number of chunks. */
-#define DATA_SIZE (CHUNK_CNT * CHUNK_SIZE)      /* Buffer size. */
+#define CHUNK_CNT 8                             
+#define DATA_SIZE (CHUNK_CNT * CHUNK_SIZE)      
 
 unsigned char buf1[DATA_SIZE], buf2[DATA_SIZE];
 size_t histogram[256];
@@ -49,7 +49,7 @@ sort_chunks (const char *subprocess, int exit_status)
 
       msg ("sort chunk %zu", i);
 
-      /* Write this chunk to a file. */
+      
       snprintf (fn, sizeof fn, "buf%zu", i);
       create (fn, CHUNK_SIZE);
       quiet = true;
@@ -57,7 +57,7 @@ sort_chunks (const char *subprocess, int exit_status)
       write (handle, buf1 + CHUNK_SIZE * i, CHUNK_SIZE);
       close (handle);
 
-      /* Sort with subprocess. */
+      
       snprintf (cmd, sizeof cmd, "%s %s", subprocess, fn);
       CHECK ((children[i] = exec (cmd)) != -1, "exec \"%s\"", cmd);
       quiet = false;
@@ -70,7 +70,7 @@ sort_chunks (const char *subprocess, int exit_status)
 
       CHECK (wait (children[i]) == exit_status, "wait for child %zu", i);
 
-      /* Read chunk back from file. */
+      
       quiet = true;
       snprintf (fn, sizeof fn, "buf%zu", i);
       CHECK ((handle = open (fn)) > 1, "open \"%s\"", fn);
@@ -80,7 +80,7 @@ sort_chunks (const char *subprocess, int exit_status)
     }
 }
 
-/* Merge the sorted chunks in buf1 into a fully sorted buf2. */
+
 static void
 merge (void) 
 {
@@ -91,22 +91,22 @@ merge (void)
 
   msg ("merge");
 
-  /* Initialize merge pointers. */
+  
   mp_left = CHUNK_CNT;
   for (i = 0; i < CHUNK_CNT; i++)
     mp[i] = buf1 + CHUNK_SIZE * i;
 
-  /* Merge. */
+  
   op = buf2;
   while (mp_left > 0) 
     {
-      /* Find smallest value. */
+      
       size_t min = 0;
       for (i = 1; i < mp_left; i++)
         if (*mp[i] < *mp[min])
           min = i;
 
-      /* Append value to buf2. */
+      
       *op++ = *mp[min];
 
       /* Advance merge pointer.

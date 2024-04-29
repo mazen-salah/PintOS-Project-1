@@ -7,11 +7,11 @@
 #### switches from real mode to 32-bit protected mode and calls
 #### main().
 
-/* Flags in control register 0. */
-#define CR0_PE 0x00000001      /* Protection Enable. */
-#define CR0_EM 0x00000004      /* (Floating-point) Emulation. */
-#define CR0_PG 0x80000000      /* Paging. */
-#define CR0_WP 0x00010000      /* Write-Protect enable in kernel mode. */
+
+#define CR0_PE 0x00000001      
+#define CR0_EM 0x00000004      
+#define CR0_PG 0x80000000      
+#define CR0_WP 0x00010000      
 
 	.section .start
 

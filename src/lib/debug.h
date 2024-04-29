@@ -36,4 +36,4 @@ void debug_backtrace_all (void);
 #else
 #define ASSERT(CONDITION) ((void) 0)
 #define NOT_REACHED() for (;;)
-#endif /* lib/debug.h */
+#endif 

@@ -245,7 +245,7 @@ strtok_r (char *s, const char *delimiters, char **save_ptr)
     s = *save_ptr;
   ASSERT (s != NULL);
 
-  /* Skip any DELIMITERS at our current position. */
+  
   while (strchr (delimiters, *s) != NULL) 
     {
       /* strchr() will always return nonnull if we're searching
@@ -260,7 +260,7 @@ strtok_r (char *s, const char *delimiters, char **save_ptr)
       s++;
     }
 
-  /* Skip any non-DELIMITERS up to the end of the string. */
+  
   token = s;
   while (strchr (delimiters, *s) == NULL)
     s++;
@@ -274,7 +274,7 @@ strtok_r (char *s, const char *delimiters, char **save_ptr)
   return token;
 }
 
-/* Sets the SIZE bytes in DST to VALUE. */
+
 void *
 memset (void *dst_, int value, size_t size) 
 {
@@ -288,7 +288,7 @@ memset (void *dst_, int value, size_t size)
   return dst_;
 }
 
-/* Returns the length of STRING. */
+
 size_t
 strlen (const char *string) 
 {

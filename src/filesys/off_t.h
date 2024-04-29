@@ -12,4 +12,4 @@ typedef int32_t off_t;
    printf ("offset=%"PROTd"\n", offset); */
 #define PROTd PRId32
 
-#endif /* filesys/off_t.h */
+#endif 

@@ -3,12 +3,12 @@
 #include "filesys/inode.h"
 #include "threads/malloc.h"
 
-/* An open file. */
+
 struct file 
   {
-    struct inode *inode;        /* File's inode. */
-    off_t pos;                  /* Current position. */
-    bool deny_write;            /* Has file_deny_write() been called? */
+    struct inode *inode;        
+    off_t pos;                  
+    bool deny_write;            
   };
 
 /* Opens a file for the given INODE, of which it takes ownership,
@@ -41,7 +41,7 @@ file_reopen (struct file *file)
   return file_open (inode_reopen (file->inode));
 }
 
-/* Closes FILE. */
+
 void
 file_close (struct file *file) 
 {
@@ -53,7 +53,7 @@ file_close (struct file *file)
     }
 }
 
-/* Returns the inode encapsulated by FILE. */
+
 struct inode *
 file_get_inode (struct file *file) 
 {
@@ -140,7 +140,7 @@ file_allow_write (struct file *file)
     }
 }
 
-/* Returns the size of FILE in bytes. */
+
 off_t
 file_length (struct file *file) 
 {

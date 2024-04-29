@@ -11,7 +11,7 @@
 #include "threads/palloc.h"
 #include "threads/vaddr.h"
 
-/* List files in the root directory. */
+
 void
 fsutil_ls (char **argv UNUSED) 
 {
@@ -56,7 +56,7 @@ fsutil_cat (char **argv)
   file_close (file);
 }
 
-/* Deletes file ARGV[1]. */
+
 void
 fsutil_rm (char **argv) 
 {
@@ -77,13 +77,13 @@ fsutil_extract (char **argv UNUSED)
   struct block *src;
   void *header, *data;
 
-  /* Allocate buffers. */
+  
   header = malloc (BLOCK_SECTOR_SIZE);
   data = malloc (BLOCK_SECTOR_SIZE);
   if (header == NULL || data == NULL)
     PANIC ("couldn't allocate buffers");
 
-  /* Open source block device. */
+  
   src = block_get_role (BLOCK_SCRATCH);
   if (src == NULL)
     PANIC ("couldn't open scratch device");
@@ -98,7 +98,7 @@ fsutil_extract (char **argv UNUSED)
       enum ustar_type type;
       int size;
 
-      /* Read and parse ustar header. */
+      
       block_read (src, sector++, header);
       error = ustar_parse_header (header, &file_name, &type, &size);
       if (error != NULL)
@@ -106,7 +106,7 @@ fsutil_extract (char **argv UNUSED)
 
       if (type == USTAR_EOF)
         {
-          /* End of archive. */
+          
           break;
         }
       else if (type == USTAR_DIRECTORY)
@@ -117,14 +117,14 @@ fsutil_extract (char **argv UNUSED)
 
           printf ("Putting '%s' into the file system...\n", file_name);
 
-          /* Create destination file. */
+          
           if (!filesys_create (file_name, size))
             PANIC ("%s: create failed", file_name);
           dst = filesys_open (file_name);
           if (dst == NULL)
             PANIC ("%s: open failed", file_name);
 
-          /* Do copy. */
+          
           while (size > 0)
             {
               int chunk_size = (size > BLOCK_SECTOR_SIZE
@@ -137,7 +137,7 @@ fsutil_extract (char **argv UNUSED)
               size -= chunk_size;
             }
 
-          /* Finish up. */
+          
           file_close (dst);
         }
     }
@@ -176,28 +176,28 @@ fsutil_append (char **argv)
 
   printf ("Appending '%s' to ustar archive on scratch device...\n", file_name);
 
-  /* Allocate buffer. */
+  
   buffer = malloc (BLOCK_SECTOR_SIZE);
   if (buffer == NULL)
     PANIC ("couldn't allocate buffer");
 
-  /* Open source file. */
+  
   src = filesys_open (file_name);
   if (src == NULL)
     PANIC ("%s: open failed", file_name);
   size = file_length (src);
 
-  /* Open target block device. */
+  
   dst = block_get_role (BLOCK_SCRATCH);
   if (dst == NULL)
     PANIC ("couldn't open scratch device");
   
-  /* Write ustar header to first sector. */
+  
   if (!ustar_make_header (file_name, USTAR_REGULAR, size, buffer))
     PANIC ("%s: name too long for ustar format", file_name);
   block_write (dst, sector++, buffer);
 
-  /* Do copy. */
+  
   while (size > 0) 
     {
       int chunk_size = size > BLOCK_SECTOR_SIZE ? BLOCK_SECTOR_SIZE : size;
@@ -217,7 +217,7 @@ fsutil_append (char **argv)
   block_write (dst, sector, buffer);
   block_write (dst, sector + 1, buffer);
 
-  /* Finish up. */
+  
   file_close (src);
   free (buffer);
 }

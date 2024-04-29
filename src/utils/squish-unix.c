@@ -116,7 +116,7 @@ relay (int sock)
      This allows replaying the input on reset. */
   lseek (STDIN_FILENO, 0, SEEK_SET);
 
-  /* Make SOCK, stdin, and stdout non-blocking. */
+  
   make_nonblocking (sock, true);
   make_nonblocking (STDIN_FILENO, true);
   make_nonblocking (STDOUT_FILENO, true);
@@ -163,7 +163,7 @@ relay (int sock)
         {
           if (errno == EINTR)
             {
-              /* Child died.  Do final relaying. */
+              
               struct pipe *p = &pipes[1];
               if (p->out == -1)
                 exit (0);
@@ -172,7 +172,7 @@ relay (int sock)
                 {
                   ssize_t n;
                   
-                  /* Write buffer. */
+                  
                   while (p->size > 0) 
                     {
                       n = write (p->out, p->buf + p->ofs, p->size);
@@ -233,7 +233,7 @@ relay (int sock)
 static void
 sigchld_handler (int signo __attribute__ ((unused))) 
 {
-  /* Nothing to do. */
+  
 }
 
 int
@@ -254,12 +254,12 @@ main (int argc __attribute__ ((unused)), char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Create socket. */
+  
   sock = socket (PF_LOCAL, SOCK_STREAM, 0);
   if (sock < 0)
     fail_io ("socket");
 
-  /* Configure socket. */
+  
   sun.sun_family = AF_LOCAL;
   strncpy (sun.sun_path, argv[1], sizeof sun.sun_path);
   sun.sun_path[sizeof sun.sun_path - 1] = '\0';
@@ -270,11 +270,11 @@ main (int argc __attribute__ ((unused)), char *argv[])
              + strlen (sun.sun_path) + 1)) < 0)
     fail_io ("bind");
 
-  /* Listen on socket. */
+  
   if (listen (sock, 1) < 0)
     fail_io ("listen");
 
-  /* Block SIGCHLD and set up a handler for it. */
+  
   sigemptyset (&sigchld_set);
   sigaddset (&sigchld_set, SIGCHLD);
   if (sigprocmask (SIG_BLOCK, &sigchld_set, NULL) < 0)
@@ -294,7 +294,7 @@ main (int argc __attribute__ ((unused)), char *argv[])
     fail_io ("fork");
   else if (pid != 0) 
     {
-      /* Running in parent process. */
+      
       make_nonblocking (sock, true);
       for (;;) 
         {
@@ -303,7 +303,7 @@ main (int argc __attribute__ ((unused)), char *argv[])
           int retval;
           int conn;
 
-          /* Wait for connection. */
+          
           FD_ZERO (&read_fds);
           FD_SET (sock, &read_fds);
           sigemptyset (&empty_set);
@@ -315,12 +315,12 @@ main (int argc __attribute__ ((unused)), char *argv[])
               fail_io ("select"); 
             }
 
-          /* Accept connection. */
+          
           conn = accept (sock, NULL, NULL);
           if (conn < 0)
             fail_io ("accept");
 
-          /* Relay connection. */
+          
           relay (conn);
           close (conn);
         }
@@ -328,7 +328,7 @@ main (int argc __attribute__ ((unused)), char *argv[])
     }
   else 
     {
-      /* Running in child process. */
+      
       if (close (sock) < 0)
         fail_io ("close");
       execvp (argv[2], argv + 2);

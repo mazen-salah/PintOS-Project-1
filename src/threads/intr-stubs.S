@@ -17,21 +17,21 @@
 */
 .func intr_entry
 intr_entry:
-	/* Save caller's registers. */
+	
 	pushl %ds
 	pushl %es
 	pushl %fs
 	pushl %gs
 	pushal
         
-	/* Set up kernel environment. */
-	cld			/* String instructions go upward. */
-	mov $SEL_KDSEG, %eax	/* Initialize segment registers. */
+	
+	cld			
+	mov $SEL_KDSEG, %eax	
 	mov %eax, %ds
 	mov %eax, %es
-	leal 56(%esp), %ebp	/* Set up frame pointer. */
+	leal 56(%esp), %ebp	
 
-	/* Call interrupt handler. */
+	
 	pushl %esp
 .globl intr_handler
 	call intr_handler
@@ -49,7 +49,7 @@ intr_entry:
 .globl intr_exit
 .func intr_exit
 intr_exit:
-        /* Restore caller's registers. */
+        
 	popal
 	popl %gs
 	popl %fs
@@ -60,7 +60,7 @@ intr_exit:
            frame_pointer members. */
 	addl $12, %esp
 
-        /* Return to caller. */
+        
 	iret
 .endfunc
 
@@ -121,7 +121,7 @@ intr##NUMBER##_stub:                            \
 	.data;                                  \
 	.long intr##NUMBER##_stub;
 
-/* All the stubs. */
+
 STUB(00, zero) STUB(01, zero) STUB(02, zero) STUB(03, zero)
 STUB(04, zero) STUB(05, zero) STUB(06, zero) STUB(07, zero)
 STUB(08, REAL) STUB(09, zero) STUB(0a, REAL) STUB(0b, REAL)

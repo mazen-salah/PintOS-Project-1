@@ -13,12 +13,12 @@
 /* Programmable Interrupt Controller (PIC) registers.
    A PC has two PICs, called the master and slave PICs, with the
    slave attached ("cascaded") to the master IRQ line 2. */
-#define PIC0_CTRL	0x20    /* Master PIC control register address. */
-#define PIC0_DATA	0x21    /* Master PIC data register address. */
-#define PIC1_CTRL	0xa0    /* Slave PIC control register address. */
-#define PIC1_DATA	0xa1    /* Slave PIC data register address. */
+#define PIC0_CTRL	0x20    
+#define PIC0_DATA	0x21    
+#define PIC1_CTRL	0xa0    
+#define PIC1_DATA	0xa1    
 
-/* Number of x86 interrupts. */
+
 #define INTR_CNT 256
 
 /* The Interrupt Descriptor Table (IDT).  The format is fixed by
@@ -27,10 +27,10 @@
    Exception- or Interrupt-Handler Procedure". */
 static uint64_t idt[INTR_CNT];
 
-/* Interrupt handler functions for each interrupt. */
+
 static intr_handler_func *intr_handlers[INTR_CNT];
 
-/* Names for each interrupt, for debugging purposes. */
+
 static const char *intr_names[INTR_CNT];
 
 /* Number of unexpected interrupts for each vector.  An
@@ -44,23 +44,23 @@ static unsigned int unexpected_cnt[INTR_CNT];
    sleep, although they may invoke intr_yield_on_return() to
    request that a new process be scheduled just before the
    interrupt returns. */
-static bool in_external_intr;   /* Are we processing an external interrupt? */
-static bool yield_on_return;    /* Should we yield on interrupt return? */
+static bool in_external_intr;   
+static bool yield_on_return;    
 
-/* Programmable Interrupt Controller helpers. */
+
 static void pic_init (void);
 static void pic_end_of_interrupt (int irq);
 
-/* Interrupt Descriptor Table helpers. */
+
 static uint64_t make_intr_gate (void (*) (void), int dpl);
 static uint64_t make_trap_gate (void (*) (void), int dpl);
 static inline uint64_t make_idtr_operand (uint16_t limit, void *base);
 
-/* Interrupt handlers. */
+
 void intr_handler (struct intr_frame *args);
 static void unexpected_interrupt (const struct intr_frame *);
 
-/* Returns the current interrupt status. */
+
 enum intr_level
 intr_get_level (void) 
 {
@@ -83,7 +83,7 @@ intr_set_level (enum intr_level level)
   return level == INTR_ON ? intr_enable () : intr_disable ();
 }
 
-/* Enables interrupts and returns the previous interrupt status. */
+
 enum intr_level
 intr_enable (void) 
 {
@@ -99,7 +99,7 @@ intr_enable (void)
   return old_level;
 }
 
-/* Disables interrupts and returns the previous interrupt status. */
+
 enum intr_level
 intr_disable (void) 
 {
@@ -113,17 +113,17 @@ intr_disable (void)
   return old_level;
 }
 
-/* Initializes the interrupt system. */
+
 void
 intr_init (void)
 {
   uint64_t idtr_operand;
   int i;
 
-  /* Initialize interrupt controller. */
+  
   pic_init ();
 
-  /* Initialize IDT. */
+  
   for (i = 0; i < INTR_CNT; i++)
     idt[i] = make_intr_gate (intr_stubs[i], 0);
 
@@ -133,7 +133,7 @@ intr_init (void)
   idtr_operand = make_idtr_operand (sizeof idt - 1, idt);
   asm volatile ("lidt %0" : : "m" (idtr_operand));
 
-  /* Initialize intr_names. */
+  
   for (i = 0; i < INTR_CNT; i++)
     intr_names[i] = "unknown";
   intr_names[0] = "#DE Divide Error";
@@ -225,7 +225,7 @@ intr_yield_on_return (void)
   yield_on_return = true;
 }
 
-/* 8259A Programmable Interrupt Controller. */
+
 
 /* Initializes the PICs.  Refer to [8259A] for details.
 
@@ -237,23 +237,23 @@ intr_yield_on_return (void)
 static void
 pic_init (void)
 {
-  /* Mask all interrupts on both PICs. */
+  
   outb (PIC0_DATA, 0xff);
   outb (PIC1_DATA, 0xff);
 
-  /* Initialize master. */
-  outb (PIC0_CTRL, 0x11); /* ICW1: single mode, edge triggered, expect ICW4. */
-  outb (PIC0_DATA, 0x20); /* ICW2: line IR0...7 -> irq 0x20...0x27. */
-  outb (PIC0_DATA, 0x04); /* ICW3: slave PIC on line IR2. */
-  outb (PIC0_DATA, 0x01); /* ICW4: 8086 mode, normal EOI, non-buffered. */
+  
+  outb (PIC0_CTRL, 0x11); 
+  outb (PIC0_DATA, 0x20); 
+  outb (PIC0_DATA, 0x04); 
+  outb (PIC0_DATA, 0x01); 
 
-  /* Initialize slave. */
-  outb (PIC1_CTRL, 0x11); /* ICW1: single mode, edge triggered, expect ICW4. */
-  outb (PIC1_DATA, 0x28); /* ICW2: line IR0...7 -> irq 0x28...0x2f. */
-  outb (PIC1_DATA, 0x02); /* ICW3: slave ID is 2. */
-  outb (PIC1_DATA, 0x01); /* ICW4: 8086 mode, normal EOI, non-buffered. */
+  
+  outb (PIC1_CTRL, 0x11); 
+  outb (PIC1_DATA, 0x28); 
+  outb (PIC1_DATA, 0x02); 
+  outb (PIC1_DATA, 0x01); 
 
-  /* Unmask all interrupts. */
+  
   outb (PIC0_DATA, 0x00);
   outb (PIC1_DATA, 0x00);
 }
@@ -266,10 +266,10 @@ pic_end_of_interrupt (int irq)
 {
   ASSERT (irq >= 0x20 && irq < 0x30);
 
-  /* Acknowledge master PIC. */
+  
   outb (0x20, 0x20);
 
-  /* Acknowledge slave PIC if this is a slave interrupt. */
+  
   if (irq >= 0x28)
     outb (0xa0, 0x20);
 }
@@ -299,14 +299,14 @@ make_gate (void (*function) (void), int dpl, int type)
   ASSERT (dpl >= 0 && dpl <= 3);
   ASSERT (type >= 0 && type <= 15);
 
-  e0 = (((uint32_t) function & 0xffff)     /* Offset 15:0. */
-        | (SEL_KCSEG << 16));              /* Target code segment. */
+  e0 = (((uint32_t) function & 0xffff)     
+        | (SEL_KCSEG << 16));              
 
-  e1 = (((uint32_t) function & 0xffff0000) /* Offset 31:16. */
-        | (1 << 15)                        /* Present. */
-        | ((uint32_t) dpl << 13)           /* Descriptor privilege level. */
-        | (0 << 12)                        /* System. */
-        | ((uint32_t) type << 8));         /* Gate type. */
+  e1 = (((uint32_t) function & 0xffff0000) 
+        | (1 << 15)                        
+        | ((uint32_t) dpl << 13)           
+        | (0 << 12)                        
+        | ((uint32_t) type << 8));         
 
   return e0 | ((uint64_t) e1 << 32);
 }
@@ -335,7 +335,7 @@ make_idtr_operand (uint16_t limit, void *base)
   return limit | ((uint64_t) (uint32_t) base << 16);
 }
 
-/* Interrupt handlers. */
+
 
 /* Handler for all interrupts, faults, and exceptions.  This
    function is called by the assembly language interrupt stubs in
@@ -361,7 +361,7 @@ intr_handler (struct intr_frame *frame)
       yield_on_return = false;
     }
 
-  /* Invoke the interrupt's handler. */
+  
   handler = intr_handlers[frame->vec_no];
   if (handler != NULL)
     handler (frame);
@@ -374,7 +374,7 @@ intr_handler (struct intr_frame *frame)
   else
     unexpected_interrupt (frame);
 
-  /* Complete the processing of an external interrupt. */
+  
   if (external) 
     {
       ASSERT (intr_get_level () == INTR_OFF);
@@ -393,7 +393,7 @@ intr_handler (struct intr_frame *frame)
 static void
 unexpected_interrupt (const struct intr_frame *f)
 {
-  /* Count the number so far. */
+  
   unsigned int n = ++unexpected_cnt[f->vec_no];
 
   /* If the number is a power of 2, print a message.  This rate
@@ -406,7 +406,7 @@ unexpected_interrupt (const struct intr_frame *f)
     f->vec_no, intr_names[f->vec_no]);
 }
 
-/* Dumps interrupt frame F to the console, for debugging. */
+
 void
 intr_dump_frame (const struct intr_frame *f) 
 {
@@ -430,7 +430,7 @@ intr_dump_frame (const struct intr_frame *f)
           f->cs, f->ds, f->es, f->ss);
 }
 
-/* Returns the name of interrupt VEC. */
+
 const char *
 intr_name (uint8_t vec) 
 {

@@ -31,10 +31,10 @@ test_priority_donate_sema (void)
 {
   struct lock_and_sema ls;
 
-  /* This test does not work with the MLFQS. */
+  
   ASSERT (!thread_mlfqs);
 
-  /* Make sure our priority is the default. */
+  
   ASSERT (thread_get_priority () == PRI_DEFAULT);
 
   lock_init (&ls.lock);

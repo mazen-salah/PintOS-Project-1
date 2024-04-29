@@ -38,11 +38,11 @@
 #include "filesys/fsutil.h"
 #endif
 
-/* Page directory with kernel mappings only. */
+
 uint32_t *init_page_dir;
 
 #ifdef FILESYS
-/* -f: Format the file system? */
+
 static bool format_filesys;
 
 /* -filesys, -scratch, -swap: Names of block devices to use,
@@ -52,9 +52,9 @@ static const char *scratch_bdev_name;
 #ifdef VM
 static const char *swap_bdev_name;
 #endif
-#endif /* FILESYS */
+#endif 
 
-/* -ul: Maximum number of pages to put into palloc's user pool. */
+
 static size_t user_page_limit = SIZE_MAX;
 
 static void bss_init (void);
@@ -72,16 +72,16 @@ static void locate_block_device (enum block_type, const char *name);
 
 int main (void) NO_RETURN;
 
-/* Pintos main program. */
+
 int
 main (void)
 {
   char **argv;
 
-  /* Clear BSS. */  
+    
   bss_init ();
 
-  /* Break command line into arguments and parse options. */
+  
   argv = read_command_line ();
   argv = parse_options (argv);
 
@@ -90,22 +90,22 @@ main (void)
   thread_init ();
   console_init ();  
 
-  /* Greet user. */
+  
   printf ("Pintos booting with %'"PRIu32" kB RAM...\n",
           init_ram_pages * PGSIZE / 1024);
 
-  /* Initialize memory system. */
+  
   palloc_init (user_page_limit);
   malloc_init ();
   paging_init ();
 
-  /* Segmentation. */
+  
 #ifdef USERPROG
   tss_init ();
   gdt_init ();
 #endif
 
-  /* Initialize interrupt handlers. */
+  
   intr_init ();
   timer_init ();
   kbd_init ();
@@ -115,13 +115,13 @@ main (void)
   syscall_init ();
 #endif
 
-  /* Start thread scheduler and enable interrupts. */
+  
   thread_start ();
   serial_init_queue ();
   timer_calibrate ();
 
 #ifdef FILESYS
-  /* Initialize file system. */
+  
   ide_init ();
   locate_block_devices ();
   filesys_init (format_filesys);
@@ -129,10 +129,10 @@ main (void)
 
   printf ("Boot complete.\n");
   
-  /* Run actions specified on kernel command line. */
+  
   run_actions (argv);
 
-  /* Finish up. */
+  
   shutdown ();
   thread_exit ();
 }
@@ -211,7 +211,7 @@ read_command_line (void)
     }
   argv[argc] = NULL;
 
-  /* Print kernel command line. */
+  
   printf ("Kernel command line:");
   for (i = 0; i < argc; i++)
     if (strchr (argv[i], ' ') == NULL)
@@ -277,7 +277,7 @@ parse_options (char **argv)
   return argv;
 }
 
-/* Runs the task specified in ARGV[1]. */
+
 static void
 run_task (char **argv)
 {
@@ -297,15 +297,15 @@ run_task (char **argv)
 static void
 run_actions (char **argv) 
 {
-  /* An action. */
+  
   struct action 
     {
-      char *name;                       /* Action name. */
-      int argc;                         /* # of args, including action name. */
-      void (*function) (char **argv);   /* Function to execute action. */
+      char *name;                       
+      int argc;                         
+      void (*function) (char **argv);   
     };
 
-  /* Table of supported actions. */
+  
   static const struct action actions[] = 
     {
       {"run", 2, run_task},
@@ -324,19 +324,19 @@ run_actions (char **argv)
       const struct action *a;
       int i;
 
-      /* Find action name. */
+      
       for (a = actions; ; a++)
         if (a->name == NULL)
           PANIC ("unknown action `%s' (use -h for help)", *argv);
         else if (!strcmp (*argv, a->name))
           break;
 
-      /* Check for required arguments. */
+      
       for (i = 1; i < a->argc; i++)
         if (argv[i] == NULL)
           PANIC ("action `%s' requires %d argument(s)", *argv, a->argc - 1);
 
-      /* Invoke action and advance. */
+      
       a->function (argv);
       argv += a->argc;
     }
@@ -387,7 +387,7 @@ usage (void)
 }
 
 #ifdef FILESYS
-/* Figure out what block devices to cast in the various Pintos roles. */
+
 static void
 locate_block_devices (void)
 {

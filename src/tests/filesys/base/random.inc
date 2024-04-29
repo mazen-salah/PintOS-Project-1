@@ -1,4 +1,4 @@
-/* -*- c -*- */
+
 
 #include <random.h>
 #include <stdio.h>

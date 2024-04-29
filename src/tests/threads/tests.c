@@ -42,7 +42,7 @@ static const struct test tests[] =
 
 static const char *test_name;
 
-/* Runs the test named NAME. */
+
 void
 run_test (const char *name) 
 {
@@ -93,7 +93,7 @@ fail (const char *format, ...)
   PANIC ("test failed");
 }
 
-/* Prints a message indicating the current test passed. */
+
 void
 pass (void) 
 {

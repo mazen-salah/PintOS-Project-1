@@ -60,7 +60,7 @@ lookup_page (uint32_t *pd, const void *vaddr, bool create)
 
   ASSERT (pd != NULL);
 
-  /* Shouldn't create new kernel virtual mappings. */
+  
   ASSERT (!create || is_user_vaddr (vaddr));
 
   /* Check for a page table for VADDR.
@@ -80,7 +80,7 @@ lookup_page (uint32_t *pd, const void *vaddr, bool create)
         return NULL;
     }
 
-  /* Return the page table entry. */
+  
   pt = pde_get_pt (*pde);
   return &pt[pt_no (vaddr)];
 }
@@ -230,7 +230,7 @@ pagedir_activate (uint32_t *pd)
   asm volatile ("movl %0, %%cr3" : : "r" (vtop (pd)) : "memory");
 }
 
-/* Returns the currently active page directory. */
+
 static uint32_t *
 active_pd (void) 
 {

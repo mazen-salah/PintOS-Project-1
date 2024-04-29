@@ -7,4 +7,4 @@
    definition, normally just after the closing brace. */
 #define PACKED __attribute__ ((packed))
 
-#endif /* lib/packed.h */
+#endif 

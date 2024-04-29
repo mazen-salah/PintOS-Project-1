@@ -5,12 +5,12 @@
 #include <stdint.h>
 #include <string.h>
 
-/* Auxiliary data for vsnprintf_helper(). */
+
 struct vsnprintf_aux 
   {
-    char *p;            /* Current output position. */
-    int length;         /* Length of output string. */
-    int max_length;     /* Max length of output string. */
+    char *p;            
+    int length;         
+    int max_length;     
   };
 
 static void vsnprintf_helper (char, void *);
@@ -25,23 +25,23 @@ static void vsnprintf_helper (char, void *);
 int
 vsnprintf (char *buffer, size_t buf_size, const char *format, va_list args) 
 {
-  /* Set up aux data for vsnprintf_helper(). */
+  
   struct vsnprintf_aux aux;
   aux.p = buffer;
   aux.length = 0;
   aux.max_length = buf_size > 0 ? buf_size - 1 : 0;
 
-  /* Do most of the work. */
+  
   __vprintf (format, args, vsnprintf_helper, &aux);
 
-  /* Add null terminator. */
+  
   if (buf_size > 0)
     *aux.p = '\0';
 
   return aux.length;
 }
 
-/* Helper function for vsnprintf(). */
+
 static void
 vsnprintf_helper (char ch, void *aux_)
 {
@@ -88,51 +88,51 @@ printf (const char *format, ...)
   return retval;
 }
 
-/* printf() formatting internals. */
 
-/* A printf() conversion. */
+
+
 struct printf_conversion 
   {
-    /* Flags. */
+    
     enum 
       {
-        MINUS = 1 << 0,         /* '-' */
-        PLUS = 1 << 1,          /* '+' */
-        SPACE = 1 << 2,         /* ' ' */
-        POUND = 1 << 3,         /* '#' */
-        ZERO = 1 << 4,          /* '0' */
-        GROUP = 1 << 5          /* '\'' */
+        MINUS = 1 << 0,         
+        PLUS = 1 << 1,          
+        SPACE = 1 << 2,         
+        POUND = 1 << 3,         
+        ZERO = 1 << 4,          
+        GROUP = 1 << 5          
       }
     flags;
 
-    /* Minimum field width. */
+    
     int width;
 
     /* Numeric precision.
        -1 indicates no precision was specified. */
     int precision;
 
-    /* Type of argument to format. */
+    
     enum 
       {
-        CHAR = 1,               /* hh */
-        SHORT = 2,              /* h */
-        INT = 3,                /* (none) */
-        INTMAX = 4,             /* j */
-        LONG = 5,               /* l */
-        LONGLONG = 6,           /* ll */
-        PTRDIFFT = 7,           /* t */
-        SIZET = 8               /* z */
+        CHAR = 1,               
+        SHORT = 2,              
+        INT = 3,                
+        INTMAX = 4,             
+        LONG = 5,               
+        LONGLONG = 6,           
+        PTRDIFFT = 7,           
+        SIZET = 8               
       }
     type;
   };
 
 struct integer_base 
   {
-    int base;                   /* Base. */
-    const char *digits;         /* Collection of digits. */
-    int x;                      /* `x' character to use, for base 16 only. */
-    int group;                  /* Number of digits to group with ' flag. */
+    int base;                   
+    const char *digits;         
+    int x;                      
+    int group;                  
   };
 
 static const struct integer_base base_d = {10, "0123456789", 0, 3};
@@ -161,7 +161,7 @@ __vprintf (const char *format, va_list args,
     {
       struct printf_conversion c;
 
-      /* Literally copy non-conversions to output. */
+      
       if (*format != '%') 
         {
           output (*format, aux);
@@ -169,23 +169,23 @@ __vprintf (const char *format, va_list args,
         }
       format++;
 
-      /* %% => %. */
+      
       if (*format == '%') 
         {
           output ('%', aux);
           continue;
         }
 
-      /* Parse conversion specifiers. */
+      
       format = parse_conversion (format, &c, &args);
 
-      /* Do conversion. */
+      
       switch (*format) 
         {
         case 'd':
         case 'i': 
           {
-            /* Signed integer conversions. */
+            
             intmax_t value;
             
             switch (c.type) 
@@ -230,7 +230,7 @@ __vprintf (const char *format, va_list args,
         case 'x':
         case 'X':
           {
-            /* Unsigned integer conversions. */
+            
             uintmax_t value;
             const struct integer_base *b;
 
@@ -282,7 +282,7 @@ __vprintf (const char *format, va_list args,
 
         case 'c': 
           {
-            /* Treat character as single-character string. */
+            
             char ch = va_arg (args, int);
             format_string (&ch, 1, &c, output, aux);
           }
@@ -290,7 +290,7 @@ __vprintf (const char *format, va_list args,
 
         case 's':
           {
-            /* String conversion. */
+            
             const char *s = va_arg (args, char *);
             if (s == NULL)
               s = "(null)";
@@ -340,7 +340,7 @@ static const char *
 parse_conversion (const char *format, struct printf_conversion *c,
                   va_list *args) 
 {
-  /* Parse flag characters. */
+  
   c->flags = 0;
   for (;;) 
     {
@@ -375,7 +375,7 @@ parse_conversion (const char *format, struct printf_conversion *c,
   if (c->flags & PLUS)
     c->flags &= ~SPACE;
 
-  /* Parse field width. */
+  
   c->width = 0;
   if (*format == '*')
     {
@@ -393,7 +393,7 @@ parse_conversion (const char *format, struct printf_conversion *c,
       c->flags |= MINUS;
     }
       
-  /* Parse precision. */
+  
   c->precision = -1;
   if (*format == '.') 
     {
@@ -415,7 +415,7 @@ parse_conversion (const char *format, struct printf_conversion *c,
   if (c->precision >= 0)
     c->flags &= ~ZERO;
 
-  /* Parse type. */
+  
   c->type = INT;
   switch (*format++) 
     {
@@ -472,12 +472,12 @@ format_integer (uintmax_t value, bool is_signed, bool negative,
                 const struct printf_conversion *c,
                 void (*output) (char, void *), void *aux)
 {
-  char buf[64], *cp;            /* Buffer and current position. */
-  int x;                        /* `x' character to use or 0 if none. */
-  int sign;                     /* Sign character or 0 if none. */
-  int precision;                /* Rendered precision. */
-  int pad_cnt;                  /* # of pad characters to fill field width. */
-  int digit_cnt;                /* # of digits output so far. */
+  char buf[64], *cp;            
+  int x;                        
+  int sign;                     
+  int precision;                
+  int pad_cnt;                  
+  int digit_cnt;                
 
   /* Determine sign character, if any.
      An unsigned conversion will never have a sign character,
@@ -523,12 +523,12 @@ format_integer (uintmax_t value, bool is_signed, bool negative,
   if ((c->flags & POUND) && b->base == 8 && (cp == buf || cp[-1] != '0'))
     *cp++ = '0';
 
-  /* Calculate number of pad characters to fill field width. */
+  
   pad_cnt = c->width - (cp - buf) - (x ? 2 : 0) - (sign != 0);
   if (pad_cnt < 0)
     pad_cnt = 0;
 
-  /* Do output. */
+  
   if ((c->flags & (MINUS | ZERO)) == 0)
     output_dup (' ', pad_cnt, output, aux);
   if (sign)
@@ -546,7 +546,7 @@ format_integer (uintmax_t value, bool is_signed, bool negative,
     output_dup (' ', pad_cnt, output, aux);
 }
 
-/* Writes CH to OUTPUT with auxiliary data AUX, CNT times. */
+
 static void
 output_dup (char ch, size_t cnt, void (*output) (char, void *), void *aux) 
 {
@@ -593,21 +593,21 @@ void
 hex_dump (uintptr_t ofs, const void *buf_, size_t size, bool ascii)
 {
   const uint8_t *buf = buf_;
-  const size_t per_line = 16; /* Maximum bytes per line. */
+  const size_t per_line = 16; 
 
   while (size > 0)
     {
       size_t start, end, n;
       size_t i;
       
-      /* Number of bytes on this line. */
+      
       start = ofs % per_line;
       end = per_line;
       if (end - start > size)
         end = start + size;
       n = end - start;
 
-      /* Print line. */
+      
       printf ("%08jx  ", (uintmax_t) ROUND_DOWN (ofs, per_line));
       for (i = 0; i < start; i++)
         printf ("   ");

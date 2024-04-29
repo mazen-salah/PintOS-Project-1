@@ -25,15 +25,15 @@
    half to the user pool.  That should be huge overkill for the
    kernel pool, but that's just fine for demonstration purposes. */
 
-/* A memory pool. */
+
 struct pool
   {
-    struct lock lock;                   /* Mutual exclusion. */
-    struct bitmap *used_map;            /* Bitmap of free pages. */
-    uint8_t *base;                      /* Base of pool. */
+    struct lock lock;                   
+    struct bitmap *used_map;            
+    uint8_t *base;                      
   };
 
-/* Two pools: one for kernel data, one for user pages. */
+
 static struct pool kernel_pool, user_pool;
 
 static void init_pool (struct pool *, void *base, size_t page_cnt,
@@ -45,7 +45,7 @@ static bool page_from_pool (const struct pool *, void *page);
 void
 palloc_init (size_t user_page_limit)
 {
-  /* Free memory starts at 1 MB and runs to the end of RAM. */
+  
   uint8_t *free_start = ptov (1024 * 1024);
   uint8_t *free_end = ptov (init_ram_pages * PGSIZE);
   size_t free_pages = (free_end - free_start) / PGSIZE;
@@ -55,7 +55,7 @@ palloc_init (size_t user_page_limit)
     user_pages = user_page_limit;
   kernel_pages = free_pages - user_pages;
 
-  /* Give half of memory to kernel, half to user. */
+  
   init_pool (&kernel_pool, free_start, kernel_pages, "kernel pool");
   init_pool (&user_pool, free_start + kernel_pages * PGSIZE,
              user_pages, "user pool");
@@ -113,7 +113,7 @@ palloc_get_page (enum palloc_flags flags)
   return palloc_get_multiple (flags, 1);
 }
 
-/* Frees the PAGE_CNT pages starting at PAGES. */
+
 void
 palloc_free_multiple (void *pages, size_t page_cnt) 
 {
@@ -141,7 +141,7 @@ palloc_free_multiple (void *pages, size_t page_cnt)
   bitmap_set_multiple (pool->used_map, page_idx, page_cnt, false);
 }
 
-/* Frees the page at PAGE. */
+
 void
 palloc_free_page (void *page) 
 {
@@ -163,7 +163,7 @@ init_pool (struct pool *p, void *base, size_t page_cnt, const char *name)
 
   printf ("%zu pages available in %s.\n", page_cnt, name);
 
-  /* Initialize the pool. */
+  
   lock_init (&p->lock);
   p->used_map = bitmap_create_in_buf (page_cnt, base, bm_pages * PGSIZE);
   p->base = base + bm_pages * PGSIZE;

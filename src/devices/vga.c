@@ -8,9 +8,9 @@
 #include "threads/interrupt.h"
 #include "threads/vaddr.h"
 
-/* VGA text screen support.  See [FREEVGA] for more information. */
 
-/* Number of columns and rows on the text display. */
+
+
 #define COL_CNT 80
 #define ROW_CNT 25
 
@@ -18,7 +18,7 @@
    the display. */
 static size_t cx, cy;
 
-/* Attribute value for gray text on a black background. */
+
 #define GRAY_ON_BLACK 0x07
 
 /* Framebuffer.  See [FREEVGA] under "VGA Text Mode Operation".
@@ -32,11 +32,11 @@ static void newline (void);
 static void move_cursor (void);
 static void find_cursor (size_t *x, size_t *y);
 
-/* Initializes the VGA text display. */
+
 static void
 init (void)
 {
-  /* Already initialized? */
+  
   static bool inited;
   if (!inited)
     {
@@ -96,13 +96,13 @@ vga_putc (int c)
       break;
     }
 
-  /* Update cursor position. */
+  
   move_cursor ();
 
   intr_set_level (old_level);
 }
 
-/* Clears the screen and moves the cursor to the upper left. */
+
 static void
 cls (void)
 {
@@ -115,7 +115,7 @@ cls (void)
   move_cursor ();
 }
 
-/* Clears row Y to spaces. */
+
 static void
 clear_row (size_t y) 
 {
@@ -144,21 +144,21 @@ newline (void)
     }
 }
 
-/* Moves the hardware cursor to (cx,cy). */
+
 static void
 move_cursor (void) 
 {
-  /* See [FREEVGA] under "Manipulating the Text-mode Cursor". */
+  
   uint16_t cp = cx + COL_CNT * cy;
   outw (0x3d4, 0x0e | (cp & 0xff00));
   outw (0x3d4, 0x0f | (cp << 8));
 }
 
-/* Reads the current hardware cursor position into (*X,*Y). */
+
 static void
 find_cursor (size_t *x, size_t *y) 
 {
-  /* See [FREEVGA] under "Manipulating the Text-mode Cursor". */
+  
   uint16_t cp;
 
   outb (0x3d4, 0x0e);

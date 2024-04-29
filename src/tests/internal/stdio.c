@@ -16,7 +16,7 @@
 #include <string.h>
 #include "threads/test.h"
 
-/* Number of failures so far. */
+
 static int failure_cnt;
 
 static void
@@ -40,7 +40,7 @@ checkf (const char *expect, const char *format, ...)
     printf ("okay\n");
 }
 
-/* Test printf() implementation. */
+
 void
 test (void) 
 {
@@ -90,7 +90,7 @@ test (void)
   checkf ("-123,456,789,012,345,678", "%'lld", -123456789012345678LL);
   checkf ("-1,234,567,890,123,456,789", "%'lld", -1234567890123456789LL);
   
-  /* Check signed integer conversions. */
+  
   checkf ("    0", "%5d", 0);
   checkf ("0    ", "%-5d", 0);
   checkf ("   +0", "%+5d", 0);
@@ -141,7 +141,7 @@ test (void)
   checkf ("123456", "%5.2d", 123456);
   checkf ("123456", "%d", 123456);
 
-  /* Check unsigned integer conversions. */
+  
   checkf ("    0", "%5u", 0);
   checkf ("    0", "%5o", 0);
   checkf ("    0", "%5x", 0);
@@ -169,13 +169,13 @@ test (void)
   checkf ("0X1E240", "%#5X", 123456);
   checkf ("0x0001e240", "%#10.8x", 123456);
 
-  /* Character and string conversions. */
+  
   checkf ("foobar", "%c%c%c%c%c%c", 'f', 'o', 'o', 'b', 'a', 'r');
   checkf ("  left-right  ", "%6s%s%-7s", "left", "-", "right");
   checkf ("trim", "%.4s", "trimoff");
   checkf ("%%", "%%%%");
 
-  /* From Cristian Cadar's automatic test case generator. */
+  
   checkf (" abcdefgh", "%9s", "abcdefgh");
   checkf ("36657730000", "%- o", (unsigned) 036657730000);
   checkf ("4139757568", "%- u", (unsigned) 4139757568UL);

@@ -21,7 +21,7 @@ main (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Open input file. */
+  
   in_fd = open (argv[1]);
   if (in_fd < 0) 
     {
@@ -30,7 +30,7 @@ main (int argc, char *argv[])
     }
   size = filesize (in_fd);
 
-  /* Create and open output file. */
+  
   if (!create (argv[2], size)) 
     {
       printf ("%s: create failed\n", argv[2]);
@@ -43,7 +43,7 @@ main (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Map files. */
+  
   in_map = mmap (in_fd, in_data);
   if (in_map == MAP_FAILED) 
     {
@@ -57,10 +57,10 @@ main (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Copy files. */
+  
   memcpy (out_data, in_data, size);
 
-  /* Unmap files (optional). */
+  
   munmap (in_map);
   munmap (out_map);
 

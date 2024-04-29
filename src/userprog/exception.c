@@ -5,7 +5,7 @@
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 
-/* Number of page faults processed. */
+
 static long long page_fault_cnt;
 
 static void kill (struct intr_frame *);
@@ -60,14 +60,14 @@ exception_init (void)
   intr_register_int (14, 0, INTR_OFF, page_fault, "#PF Page-Fault Exception");
 }
 
-/* Prints exception statistics. */
+
 void
 exception_print_stats (void) 
 {
   printf ("Exception: %lld page faults\n", page_fault_cnt);
 }
 
-/* Handler for an exception (probably) caused by a user process. */
+
 static void
 kill (struct intr_frame *f) 
 {
@@ -122,10 +122,10 @@ kill (struct intr_frame *f)
 static void
 page_fault (struct intr_frame *f) 
 {
-  bool not_present;  /* True: not-present page, false: writing r/o page. */
-  bool write;        /* True: access was write, false: access was read. */
-  bool user;         /* True: access by user, false: access by kernel. */
-  void *fault_addr;  /* Fault address. */
+  bool not_present;  
+  bool write;        
+  bool user;         
+  void *fault_addr;  
 
   /* Obtain faulting address, the virtual address that was
      accessed to cause the fault.  It may point to code or to
@@ -140,10 +140,10 @@ page_fault (struct intr_frame *f)
      be assured of reading CR2 before it changed). */
   intr_enable ();
 
-  /* Count page faults. */
+  
   page_fault_cnt++;
 
-  /* Determine cause. */
+  
   not_present = (f->error_code & PF_P) == 0;
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;

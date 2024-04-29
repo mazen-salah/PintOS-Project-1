@@ -243,29 +243,29 @@ hash_cur (struct hash_iterator *i)
   return i->elem;
 }
 
-/* Returns the number of elements in H. */
+
 size_t
 hash_size (struct hash *h) 
 {
   return h->elem_cnt;
 }
 
-/* Returns true if H contains no elements, false otherwise. */
+
 bool
 hash_empty (struct hash *h) 
 {
   return h->elem_cnt == 0;
 }
 
-/* Fowler-Noll-Vo hash constants, for 32-bit word sizes. */
+
 #define FNV_32_PRIME 16777619u
 #define FNV_32_BASIS 2166136261u
 
-/* Returns a hash of the SIZE bytes in BUF. */
+
 unsigned
 hash_bytes (const void *buf_, size_t size)
 {
-  /* Fowler-Noll-Vo 32-bit hash, for bytes. */
+  
   const unsigned char *buf = buf_;
   unsigned hash;
 
@@ -278,7 +278,7 @@ hash_bytes (const void *buf_, size_t size)
   return hash;
 } 
 
-/* Returns a hash of string S. */
+
 unsigned
 hash_string (const char *s_) 
 {
@@ -294,14 +294,14 @@ hash_string (const char *s_)
   return hash;
 }
 
-/* Returns a hash of integer I. */
+
 unsigned
 hash_int (int i) 
 {
   return hash_bytes (&i, sizeof i);
 }
 
-/* Returns the bucket in H that E belongs in. */
+
 static struct list *
 find_bucket (struct hash *h, struct hash_elem *e) 
 {
@@ -325,24 +325,24 @@ find_elem (struct hash *h, struct list *bucket, struct hash_elem *e)
   return NULL;
 }
 
-/* Returns X with its lowest-order bit set to 1 turned off. */
+
 static inline size_t
 turn_off_least_1bit (size_t x) 
 {
   return x & (x - 1);
 }
 
-/* Returns true if X is a power of 2, otherwise false. */
+
 static inline size_t
 is_power_of_2 (size_t x) 
 {
   return x != 0 && turn_off_least_1bit (x) == 0;
 }
 
-/* Element per bucket ratios. */
-#define MIN_ELEMS_PER_BUCKET  1 /* Elems/bucket < 1: reduce # of buckets. */
-#define BEST_ELEMS_PER_BUCKET 2 /* Ideal elems/bucket. */
-#define MAX_ELEMS_PER_BUCKET  4 /* Elems/bucket > 4: increase # of buckets. */
+
+#define MIN_ELEMS_PER_BUCKET  1 
+#define BEST_ELEMS_PER_BUCKET 2 
+#define MAX_ELEMS_PER_BUCKET  4 
 
 /* Changes the number of buckets in hash table H to match the
    ideal.  This function can fail because of an out-of-memory
@@ -357,7 +357,7 @@ rehash (struct hash *h)
 
   ASSERT (h != NULL);
 
-  /* Save old bucket info for later use. */
+  
   old_buckets = h->buckets;
   old_bucket_cnt = h->bucket_cnt;
 
@@ -371,11 +371,11 @@ rehash (struct hash *h)
   while (!is_power_of_2 (new_bucket_cnt))
     new_bucket_cnt = turn_off_least_1bit (new_bucket_cnt);
 
-  /* Don't do anything if the bucket count wouldn't change. */
+  
   if (new_bucket_cnt == old_bucket_cnt)
     return;
 
-  /* Allocate new buckets and initialize them as empty. */
+  
   new_buckets = malloc (sizeof *new_buckets * new_bucket_cnt);
   if (new_buckets == NULL) 
     {
@@ -387,11 +387,11 @@ rehash (struct hash *h)
   for (i = 0; i < new_bucket_cnt; i++) 
     list_init (&new_buckets[i]);
 
-  /* Install new bucket info. */
+  
   h->buckets = new_buckets;
   h->bucket_cnt = new_bucket_cnt;
 
-  /* Move each old element into the appropriate new bucket. */
+  
   for (i = 0; i < old_bucket_cnt; i++) 
     {
       struct list *old_bucket;
@@ -412,7 +412,7 @@ rehash (struct hash *h)
   free (old_buckets);
 }
 
-/* Inserts E into BUCKET (in hash table H). */
+
 static void
 insert_elem (struct hash *h, struct list *bucket, struct hash_elem *e) 
 {
@@ -420,7 +420,7 @@ insert_elem (struct hash *h, struct list *bucket, struct hash_elem *e)
   list_push_front (bucket, &e->list_elem);
 }
 
-/* Removes E from hash table H. */
+
 static void
 remove_elem (struct hash *h, struct hash_elem *e) 
 {

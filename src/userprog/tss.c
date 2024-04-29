@@ -51,8 +51,8 @@
 struct tss
   {
     uint16_t back_link, :16;
-    void *esp0;                         /* Ring 0 stack virtual address. */
-    uint16_t ss0, :16;                  /* Ring 0 stack segment selector. */
+    void *esp0;                         
+    uint16_t ss0, :16;                  
     void *esp1;
     uint16_t ss1, :16;
     void *esp2;
@@ -72,10 +72,10 @@ struct tss
     uint16_t trace, bitmap;
   };
 
-/* Kernel TSS. */
+
 static struct tss *tss;
 
-/* Initializes the kernel TSS. */
+
 void
 tss_init (void) 
 {
@@ -88,7 +88,7 @@ tss_init (void)
   tss_update ();
 }
 
-/* Returns the kernel TSS. */
+
 struct tss *
 tss_get (void) 
 {

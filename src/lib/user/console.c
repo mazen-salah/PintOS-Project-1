@@ -11,7 +11,7 @@ vprintf (const char *format, va_list args)
   return vhprintf (STDOUT_FILENO, format, args);
 }
 
-/* Like printf(), but writes output to the given HANDLE. */
+
 int
 hprintf (int handle, const char *format, ...) 
 {
@@ -36,7 +36,7 @@ puts (const char *s)
   return 0;
 }
 
-/* Writes C to the console. */
+
 int
 putchar (int c) 
 {
@@ -45,13 +45,13 @@ putchar (int c)
   return c;
 }
 
-/* Auxiliary data for vhprintf_helper(). */
+
 struct vhprintf_aux 
   {
-    char buf[64];       /* Character buffer. */
-    char *p;            /* Current position in buffer. */
-    int char_cnt;       /* Total characters written so far. */
-    int handle;         /* Output file handle. */
+    char buf[64];       
+    char *p;            
+    int char_cnt;       
+    int handle;         
   };
 
 static void add_char (char, void *);
@@ -84,7 +84,7 @@ add_char (char c, void *aux_)
   aux->char_cnt++;
 }
 
-/* Flushes the buffer in AUX. */
+
 static void
 flush (struct vhprintf_aux *aux)
 {

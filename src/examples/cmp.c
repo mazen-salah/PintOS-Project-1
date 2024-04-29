@@ -16,7 +16,7 @@ main (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Open files. */
+  
   fd[0] = open (argv[1]);
   if (fd[0] < 0) 
     {
@@ -30,7 +30,7 @@ main (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  /* Compare data. */
+  
   for (;;) 
     {
       int pos;
